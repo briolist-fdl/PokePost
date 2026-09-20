@@ -1,0 +1,18 @@
+const {MessageFlags}=require('discord.js');
+const {createGuildProfileRuntime}=require('./guildProfileRuntime');
+const {createServerSetup}=require('./serverSetup');
+const {createServerSetupStore}=require('./serverSetupStore');
+const {createProfileRenderer}=require('./profileRenderer');
+function createTestRuntime({pool,client,guildIds,logger=console}){
+ const allowed=new Set(guildIds),runtime=createGuildProfileRuntime({pool,client,render:createProfileRenderer(client),logger});
+ const setup=createServerSetup({store:createServerSetupStore(pool),logger});
+ async function handle(i){
+  if(!i.isChatInputCommand()&&!i.isModalSubmit()&&!i.isButton())return;
+  if(!allowed.has(i.guildId))return i.reply({content:'This test bot is not enabled in this server.',flags:MessageFlags.Ephemeral});
+  if(i.isChatInputCommand()&&i.commandName==='post'&&i.options.getSubcommandGroup(false)==='admin'&&i.options.getSubcommand()==='server')return setup.open(i);
+  if(i.isModalSubmit()&&i.customId.startsWith('post_server:'))return setup.submit(i);
+  if(!await runtime.handle(i))await i.reply({content:'This feature is not available in the test version.',flags:MessageFlags.Ephemeral});
+ }
+ return {handle,refreshTick:runtime.refreshTick,cleanupTick:runtime.cleanupTick};
+}
+module.exports={createTestRuntime};

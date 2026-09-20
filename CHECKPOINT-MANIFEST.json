@@ -1,0 +1,207 @@
+{
+  "baseline": "74294ddc597cdf871296aff6292a3928d92c8446",
+  "branch": "codex/pokepost-shared-profile-checkpoint-20260920",
+  "hashFormat": "SHA256 of UTF-8 text with CRLF normalized to LF",
+  "files": [
+    {
+      "file": ".env.test.example",
+      "sha256": "c05d9548960926e040f0264ec37b54bb85cb9e0c2d26a653010d0eb03b678371"
+    },
+    {
+      "file": ".gitignore",
+      "sha256": "fadd5f845c29519105bbb8e24da5151d3fd09f7661b55a05d4705e53cb671cbd"
+    },
+    {
+      "file": "DATA-RETENTION.md",
+      "sha256": "067572055e5b520202ece8f37c8bb75eddfe1a97a37a1f8a53744a83d04e9b91"
+    },
+    {
+      "file": "DELIVERY-RECOVERY.md",
+      "sha256": "94cc7c0a6fe5db837ab35531cf6bea515f8a4bb34d94b76de380dad944444286"
+    },
+    {
+      "file": "GUILD-MODERATION.md",
+      "sha256": "6ee7cd66c640e89bec31d115080a6441e7218870837eb106c19361bf091682aa"
+    },
+    {
+      "file": "GUILD-SETTINGS.md",
+      "sha256": "e4f20226bf84ca1ad075eeb24cbe4f09b888ba037700ba3893d5ad919217eb85"
+    },
+    {
+      "file": "OWNER-ACTIONS.md",
+      "sha256": "b9cf2591e75fc0e82fc42f587e464550674141fe5bdd2ac5aae9a8b207466315"
+    },
+    {
+      "file": "PROFILE-COMMANDS.md",
+      "sha256": "c38ff77050bc4570d41977d8b6cbd9021b23630ed9ba3a8af481efad342dc4b4"
+    },
+    {
+      "file": "PROFILE-ERASURE.md",
+      "sha256": "6590d66f82252040bb5fee1b4fb3e80b2b354a531f12342d3251d0a4d5c45564"
+    },
+    {
+      "file": "PROFILE-EXTRAS.md",
+      "sha256": "0d27ab18ae6702addfb8b4b053327e6e06be6f7d5e4308ae7f2f70b0dc66e569"
+    },
+    {
+      "file": "SERVER-SETUP.md",
+      "sha256": "60ae5d0ef3f93491cdcdfb41893437dc47955a767cefade0be05688921fbe9a7"
+    },
+    {
+      "file": "SHARED-PROFILES.md",
+      "sha256": "1ac308474002373d67de738570a9c7a7a3ec0f6d9072a148af817383d5be1b14"
+    },
+    {
+      "file": "TEST-BOT.md",
+      "sha256": "f83c18fb4724f7f30e5e99d5ba8161b81f7c255f551cee51951e6e8f2b9d7e35"
+    },
+    {
+      "file": "TEST-PRIVACY.md",
+      "sha256": "159ae39faa190a190bcbfbe606feb130520b9be68f02120333980f4d6ea75886"
+    },
+    {
+      "file": "TEST-RECOVERY.md",
+      "sha256": "af99942e498d466816f79a8baacdadac85e59576b98a80e2e7f605c681d511af"
+    },
+    {
+      "file": "migrations/001-guild-settings.sql",
+      "sha256": "80afddf5776a5da827dacce1a53b3ed1c654d62483ce1406bdcc8ea9cf400f0f"
+    },
+    {
+      "file": "migrations/002-shared-profiles.sql",
+      "sha256": "22c43cead8fefce629babb0afc6681cda9dc31197c4ad190f60662f2feb3e98a"
+    },
+    {
+      "file": "migrations/003-profile-extras.sql",
+      "sha256": "1bf311a438fe34c3fa16b635224f9e8b6ff145b70e71de459f01a80afec3e2ad"
+    },
+    {
+      "file": "migrations/004-optional-local-feed.sql",
+      "sha256": "24df11933489d82c0f470484ff094265ce09861d55d61d82c85aed9dc990709c"
+    },
+    {
+      "file": "migrations/005-group-threads.sql",
+      "sha256": "4dd55aaf7846f500f1d3fda72e0e9afb7fbca3aafb9888b33ddc6bfbc2ea5dff"
+    },
+    {
+      "file": "migrations/006-profile-refresh-queue.sql",
+      "sha256": "3845a2e1809dfb3a11a2504d5d3345fa93bc5b411eccd56b67433163e83215a7"
+    },
+    {
+      "file": "migrations/007-durable-delivery.sql",
+      "sha256": "bfceafb0720933f9c4d3445ddcbd419532dee55a082def924dd5619809b79b5f"
+    },
+    {
+      "file": "migrations/008-owner-actions.sql",
+      "sha256": "5cbf8881adec3868ea23f492778ca3134f209023e18f53381c0d397ff3f96f96"
+    },
+    {
+      "file": "migrations/009-guild-moderation.sql",
+      "sha256": "0c8a16355f20c6d706d48c60f444e40e7c822e4196ee60b4fd1026b184526b8a"
+    },
+    {
+      "file": "src/activationStore.js",
+      "sha256": "66b2861dfb74dd8771cebcec225b8bce502ba9443a335b571e93237c7d77853e"
+    },
+    {
+      "file": "src/dataRetention.js",
+      "sha256": "e8cb7faf1976c9bfdf75ce688fa665deac5445a5218e9c4a58d786dfb931062b"
+    },
+    {
+      "file": "src/guildModeration.js",
+      "sha256": "b91eef1e520e4e3ca8039bba93bd2b2c1ac69f41f94e4695987205bab1b7e552"
+    },
+    {
+      "file": "src/guildOwnerStore.js",
+      "sha256": "28ba089d255f6a572447b802eb81f4e8ea0885e13b022483b00582b92b381a76"
+    },
+    {
+      "file": "src/guildProfileCommands.js",
+      "sha256": "9824a7c3d7a6b1bd2d5393987c50581148cecfb0575bfc1d52fa0c7522e89b5c"
+    },
+    {
+      "file": "src/guildProfileForm.js",
+      "sha256": "8cb0cf9ccc4701fe0cd7e79e8d2faecd3edd2a847272d5ee3d3ce8a1b5f2b412"
+    },
+    {
+      "file": "src/guildProfileRuntime.js",
+      "sha256": "5ac7d5029ddc97330c8cdda53824bba8de919b8659ab1c22d7d9c4bfaff82757"
+    },
+    {
+      "file": "src/guildPublisher.js",
+      "sha256": "5d5c009fd2001ebe010c98e66166aacf2f6a89b5020ee3de1afd57f6471b6033"
+    },
+    {
+      "file": "src/guildSettings.js",
+      "sha256": "b7b68c9389a8a7f6730c51508e65a74005b9a8539e539c3f4057206949eb3a9d"
+    },
+    {
+      "file": "src/importSharedProfiles.js",
+      "sha256": "dc97aa0c518d3e0cca6573fbddccb292a28bec6433083f51a3e7ba666303ff72"
+    },
+    {
+      "file": "src/profileErasure.js",
+      "sha256": "03c5249658cd08b1f335ba6c6120f13efa61a10cdf6e9a692e1cec37aafcec56"
+    },
+    {
+      "file": "src/profileErasureStore.js",
+      "sha256": "75bcd3ee7322793cee819eca49cc489d32f44a58dc0a7ca4c64590761fc406b1"
+    },
+    {
+      "file": "src/profileExtras.js",
+      "sha256": "1719b1835464c6d74f2b295e8c2f4c203b0190abc2cb5912842565a74862710a"
+    },
+    {
+      "file": "src/profileFormStore.js",
+      "sha256": "a6d0c122da857771424e2dd85db493592d63cf9c2ac51e4a6652124b97606be6"
+    },
+    {
+      "file": "src/profileRefreshWorker.js",
+      "sha256": "8075c4ef8e84174f1e4ad4bb7bea10238afbe497c99a4ed34f8921438cf2db64"
+    },
+    {
+      "file": "src/profileRenderer.js",
+      "sha256": "e58192f82729de540815ea4c3d340f763215b501e30b1998e02b56d820b8279b"
+    },
+    {
+      "file": "src/serverSetup.js",
+      "sha256": "ee50cc8b611dc1e11634bd94bf2ed8e5b5ebfa5a9c72d0c424c83cbedc741a75"
+    },
+    {
+      "file": "src/serverSetupStore.js",
+      "sha256": "aa52b5beeacde257854ec1bd79d5bbb820187f3e71ecf00fe0c1cd51d4042258"
+    },
+    {
+      "file": "src/testCommands.js",
+      "sha256": "30165808b9d0220138fd7b197eb26aed5a4a82eeab7d4421e605c7ed18004c02"
+    },
+    {
+      "file": "src/testDiagnostics.js",
+      "sha256": "b15fb3f57a7399a969edfbdf5968894df89ed6c43a13e9bb86cf79a3dd7fa015"
+    },
+    {
+      "file": "src/testEnvironment.js",
+      "sha256": "66681c478cd6e8f7b76bc0375d22d870c07dd34afa34d1838bcdf68b22ba30b8"
+    },
+    {
+      "file": "src/testRuntime.js",
+      "sha256": "99d6977aa8b3e4a80acd81ee000c49f51235684aff84fcb4b0e12954d767901b"
+    },
+    {
+      "file": "test-bot.js",
+      "sha256": "913ba7168e7f880af7d241c5aef230e7df6bd7ea55bc768879403d3a113b7838"
+    },
+    {
+      "file": "test-recovery.js",
+      "sha256": "660932bb314562836f7b3da2ff11d8c9a4899dec47105c118d9c166ff192f445"
+    }
+  ],
+  "excluded": [
+    "package.json",
+    "test/",
+    ".env",
+    ".env.test",
+    ".test-logs/"
+  ],
+  "testSuites": 8
+}
