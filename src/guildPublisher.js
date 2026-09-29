@@ -31,14 +31,15 @@ function createGuildPublisher({pool,client,render,now=()=>new Date(),logger=cons
  async function settle(db,g,u,attempt){return tx(db,async()=>{
   const p=await current(db,g,u,true);let accept=false;
   if(p?.active && p.public_channel_id===attempt.source_channel_id && p.public_message_id===attempt.source_message_id){const config=await settings(db,g);accept=publicChannelFor(config,p.vivillon_pattern)===attempt.target_channel_id;}
-  if(accept){await db.query('UPDATE poke_post_activations SET public_channel_id=$3,public_message_id=$4,repost_delivered=GREATEST(repost_delivered,$5),updated_at=NOW() WHERE guild_id=$1 AND discord_user_id=$2',[g,u,attempt.target_channel_id,attempt.delivered_message_id,attempt.repost_generation]);
+  if(accept){await db.query('UPDATE poke_post_activations SET public_channel_id=$3,public_message_id=$4,repost_delivered=GREATEST(repost_delivered,$5),last_bumped_at=CASE WHEN $6 THEN $7 ELSE last_bumped_at END,updated_at=NOW() WHERE guild_id=$1 AND discord_user_id=$2',[g,u,attempt.target_channel_id,attempt.delivered_message_id,attempt.repost_generation,attempt.auto_bump,attempt.attempted_at]);
    await queueCleanup(db,g,u,attempt.source_channel_id,attempt.source_message_id);
   }else await queueCleanup(db,g,u,attempt.target_channel_id,attempt.delivered_message_id);
   await db.query('DELETE FROM poke_post_delivery_attempts WHERE guild_id=$1 AND discord_user_id=$2',[g,u]);return accept&&String(p.revision)===String(attempt.source_revision)&&p.publish_to_followers===attempt.source_publishing&&p.vivillon_pattern===attempt.source_region;
  });}
- async function refresh(g,u){return locked(g,u,async db=>{
+ async function refresh(g,u,bumpRequest=null){return locked(g,u,async db=>{
   let pending=(await db.query('SELECT * FROM poke_post_delivery_attempts WHERE guild_id=$1 AND discord_user_id=$2',[g,u])).rows[0];
   let p=await current(db,g,u);
+  if(bumpRequest&&(pending||!p?.active))return false;
   if(pending?.delivered_message_id)return settle(db,g,u,pending);
   if(pending?.attempted_at && now()-new Date(pending.attempted_at)>120000)throw review('Unconfirmed delivery requires inspection before retry');
   if(!p?.active){
@@ -46,20 +47,29 @@ function createGuildPublisher({pool,client,render,now=()=>new Date(),logger=cons
    if(pending)await db.query('DELETE FROM poke_post_delivery_attempts WHERE guild_id=$1 AND discord_user_id=$2',[g,u]);return true;
   }
   const config=await settings(db,g),target=publicChannelFor(config,p.vivillon_pattern),ch=await channel(g,target,true);
+  if(bumpRequest){
+   if(!config.bumpEnabled||p.public_message_id!==bumpRequest.messageId||p.public_channel_id!==bumpRequest.channelId||target!==bumpRequest.channelId||
+    (p.last_bumped_at&&new Date(p.last_bumped_at)>=bumpRequest.cutoff)||String(p.repost_requested)!==String(p.repost_delivered))return false;
+   if((await db.query('SELECT 1 FROM poke_post_refresh_queue WHERE guild_id=$1 AND discord_user_id=$2',[g,u])).rows.length)return false;
+  }
   if(!pending){
-   const content=await render({...p,trainer_code_formatted:p.trainer_code_raw.replace(/(\d{4})(\d{4})(\d{4})/,'$1 $2 $3')},config);
+   let content=await render({...p,trainer_code_formatted:p.trainer_code_raw.replace(/(\d{4})(\d{4})(\d{4})/,'$1 $2 $3')},config);
    if(typeof content!=='string')throw Error('Renderer must return text');
+   if(bumpRequest){const lines=content.split('\n');lines[0]+=' · *bumped*';content=lines.join('\n');}
+   if(content.length>2000)throw Error('Rendered profile is too long');
    const payload=JSON.parse(JSON.stringify({content,components:scopedCopyButtons(p),allowedMentions:{parse:[]},flags:MessageFlags.SuppressNotifications}));
-   if(String(p.repost_requested)===String(p.repost_delivered)&&p.public_channel_id===target&&p.public_message_id){const old=await message(ch,p.public_message_id,g,u);if(old){await old.edit({content:payload.content,components:payload.components,allowedMentions:payload.allowedMentions});return true;}}
-   pending=(await db.query(`INSERT INTO poke_post_delivery_attempts(guild_id,discord_user_id,source_channel_id,source_message_id,target_channel_id,nonce,payload,repost_generation,source_revision,source_publishing,source_region)
-    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,[g,u,p.public_channel_id,p.public_message_id,target,randomUUID().replaceAll('-','').slice(0,25),JSON.stringify(payload),p.repost_requested,p.revision,p.publish_to_followers,p.vivillon_pattern])).rows[0];
+   if(!bumpRequest&&String(p.repost_requested)===String(p.repost_delivered)&&p.public_channel_id===target&&p.public_message_id){const old=await message(ch,p.public_message_id,g,u);if(old){await old.edit({content:payload.content,components:payload.components,allowedMentions:payload.allowedMentions});return true;}}
+   pending=(await db.query(`INSERT INTO poke_post_delivery_attempts(guild_id,discord_user_id,source_channel_id,source_message_id,target_channel_id,nonce,payload,repost_generation,source_revision,source_publishing,source_region,auto_bump)
+    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,[g,u,p.public_channel_id,p.public_message_id,target,randomUUID().replaceAll('-','').slice(0,25),JSON.stringify(payload),p.repost_requested,p.revision,p.publish_to_followers,p.vivillon_pattern,!!bumpRequest])).rows[0];
   }
   // A prior attempt keeps its original destination, body and nonce across retries.
   const destination=pending.target_channel_id===target?ch:await channel(g,pending.target_channel_id,true);
   await db.query('UPDATE poke_post_delivery_attempts SET attempted_at=COALESCE(attempted_at,$3) WHERE guild_id=$1 AND discord_user_id=$2',[g,u,now()]);
   const sent=await destination.send({...pending.payload,nonce:pending.nonce,enforceNonce:true});
   await db.query('UPDATE poke_post_delivery_attempts SET delivered_message_id=$3 WHERE guild_id=$1 AND discord_user_id=$2',[g,u,sent.id]);
-  pending.delivered_message_id=sent.id;return settle(db,g,u,pending);
+  pending.delivered_message_id=sent.id;
+  if(!pending.attempted_at)pending.attempted_at=(await db.query('SELECT attempted_at FROM poke_post_delivery_attempts WHERE guild_id=$1 AND discord_user_id=$2',[g,u])).rows[0].attempted_at;
+  return settle(db,g,u,pending);
  });}
  async function deactivateInTransaction(db,g,u,expected){
   const p=await current(db,g,u,true);if(!p)return false;
@@ -163,6 +173,11 @@ function createGuildPublisher({pool,client,render,now=()=>new Date(),logger=cons
    });
   });
  }
- return {refresh,deactivate,cleanupTick,recoveryTick,reconcileDelivery,moderateRegion,moderateRemove};
+ async function bump(g,u,{messageId,channelId,cutoff}={}){
+  scope(g,u);
+  if(!validId(messageId)||!validId(channelId)||!(cutoff instanceof Date)||!Number.isFinite(+cutoff)||cutoff>now())throw Error('Invalid bump request');
+  return refresh(g,u,{messageId,channelId,cutoff});
+ }
+ return {refresh:(g,u)=>refresh(g,u),bump,deactivate,cleanupTick,recoveryTick,reconcileDelivery,moderateRegion,moderateRemove};
 }
 module.exports={createGuildPublisher};

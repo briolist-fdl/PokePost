@@ -34,6 +34,6 @@ function createGuildProfileRuntime({pool,client,render,logger=console}) {
    recoveryTurn=true;await worker.tick();
   }finally{running=false;}
  }
- return {handle,refreshTick,cleanupTick:publisher.cleanupTick,deactivateProfile:publisher.deactivate};
+ return {handle,bumpProfile:publisher.bump,refreshTick,cleanupTick:publisher.cleanupTick,deactivateProfile:publisher.deactivate};
 }
 module.exports={createGuildProfileRuntime};
