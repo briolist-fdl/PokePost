@@ -1,3 +1,4 @@
+const {createGuildBumpScheduler}=require('./guildBumpScheduler');
 const {createGuildModeration}=require('./guildModeration');
 const {createProfileErasureStore}=require('./profileErasureStore');
 const {createProfileErasure}=require('./profileErasure');
@@ -13,6 +14,7 @@ const {createGuildPublisher}=require('./guildPublisher');
 // is created here. The caller provides the Discord client and profile renderer.
 function createGuildProfileRuntime({pool,client,render,logger=console}) {
  const publisher=createGuildPublisher({pool,client,render,logger});
+ const scheduler=createGuildBumpScheduler({pool,bump:publisher.bump,logger});
  const guilds=createGuildSettingsStore(pool),formStore=createProfileFormStore(pool),activationStore=createActivationStore(pool);
  const getSettings=guildId=>guilds.get(guildId);
  const moderation=createGuildModeration({publisher,getSettings,logger});
@@ -34,6 +36,10 @@ function createGuildProfileRuntime({pool,client,render,logger=console}) {
    recoveryTurn=true;await worker.tick();
   }finally{running=false;}
  }
- return {handle,bumpProfile:publisher.bump,refreshTick,cleanupTick:publisher.cleanupTick,deactivateProfile:publisher.deactivate};
+ async function bumpTick(){
+  if(running)return false;running=true;
+  try{return await scheduler.tick();}finally{running=false;}
+ }
+ return {handle,bumpProfile:publisher.bump,initializeBumps:scheduler.initialize,bumpTick,refreshTick,cleanupTick:publisher.cleanupTick,deactivateProfile:publisher.deactivate};
 }
 module.exports={createGuildProfileRuntime};
