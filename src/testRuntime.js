@@ -4,7 +4,7 @@ const {createServerSetup}=require('./serverSetup');
 const {createServerSetupStore}=require('./serverSetupStore');
 const {createProfileRenderer}=require('./profileRenderer');
 function createTestRuntime({pool,client,guildIds,logger=console}){
- const allowed=new Set(guildIds),runtime=createGuildProfileRuntime({pool,client,render:createProfileRenderer(client),logger});
+ const allowed=new Set(guildIds),runtime=createGuildProfileRuntime({pool,client,render:createProfileRenderer(client),logger,guildIds});
  const setup=createServerSetup({store:createServerSetupStore(pool),logger});
  async function handle(i){
   if(!i.isChatInputCommand()&&!i.isModalSubmit()&&!i.isButton())return;
@@ -13,6 +13,6 @@ function createTestRuntime({pool,client,guildIds,logger=console}){
   if(i.isModalSubmit()&&i.customId.startsWith('post_server:'))return setup.submit(i);
   if(!await runtime.handle(i))await i.reply({content:'This feature is not available in the test version.',flags:MessageFlags.Ephemeral});
  }
- return {handle,initializeBumps:runtime.initializeBumps,bumpTick:runtime.bumpTick,refreshTick:runtime.refreshTick,cleanupTick:runtime.cleanupTick};
+ return {handle,threadTick:runtime.threadTick,initializeBumps:runtime.initializeBumps,bumpTick:runtime.bumpTick,refreshTick:runtime.refreshTick,cleanupTick:runtime.cleanupTick};
 }
 module.exports={createTestRuntime};

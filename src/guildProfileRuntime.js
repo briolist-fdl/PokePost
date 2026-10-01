@@ -1,3 +1,4 @@
+const {createGuildThreadDelivery}=require('./guildThreadDelivery');
 const {createGuildBumpScheduler}=require('./guildBumpScheduler');
 const {createGuildModeration}=require('./guildModeration');
 const {createProfileErasureStore}=require('./profileErasureStore');
@@ -12,7 +13,8 @@ const {createGuildOwnerStore}=require('./guildOwnerStore');
 const {createGuildPublisher}=require('./guildPublisher');
 // Explicit factory for the future migrated runtime. No connection, timer or login
 // is created here. The caller provides the Discord client and profile renderer.
-function createGuildProfileRuntime({pool,client,render,logger=console}) {
+function createGuildProfileRuntime({pool,client,render,logger=console,guildIds=[]}) {
+ const threads=guildIds.length?createGuildThreadDelivery({pool,client,render,guildIds,logger}):null;
  const publisher=createGuildPublisher({pool,client,render,logger});
  const scheduler=createGuildBumpScheduler({pool,bump:publisher.bump,logger});
  const guilds=createGuildSettingsStore(pool),formStore=createProfileFormStore(pool),activationStore=createActivationStore(pool);
@@ -40,6 +42,7 @@ function createGuildProfileRuntime({pool,client,render,logger=console}) {
   if(running)return false;running=true;
   try{return await scheduler.tick();}finally{running=false;}
  }
- return {handle,bumpProfile:publisher.bump,initializeBumps:scheduler.initialize,bumpTick,refreshTick,cleanupTick:publisher.cleanupTick,deactivateProfile:publisher.deactivate};
+ async function threadTick(){if(running||!threads)return false;running=true;try{return await threads.tick();}finally{running=false;}}
+ return {handle,threadTick,bumpProfile:publisher.bump,initializeBumps:scheduler.initialize,bumpTick,refreshTick,cleanupTick:publisher.cleanupTick,deactivateProfile:publisher.deactivate};
 }
 module.exports={createGuildProfileRuntime};

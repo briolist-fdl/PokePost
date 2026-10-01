@@ -50,6 +50,7 @@ async function main(){
     try{await retention.tick();}catch(error){report('test_retention_failed',error);}
     await runtime.refreshTick();await runtime.cleanupTick();
     if(config.bumpsEnabled)await runtime.bumpTick();
+    if(config.threadsEnabled)await runtime.threadTick();
    }finally{busy=false;}});},60000);
    console.log('Test bot ready. Refresh and cleanup run once per minute.');
    diagnostics.log({event:'test_bot_ready',bumpsEnabled:config.bumpsEnabled});

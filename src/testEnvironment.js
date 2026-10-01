@@ -9,9 +9,11 @@ function testConfig(env){
  if(env.POKEPOST_TEST_DATABASE_URL===env.DATABASE_URL)throw setupError('The test database must differ from the production database');
  let url;try{url=new URL(env.POKEPOST_TEST_DATABASE_URL);}catch{throw setupError('Invalid test database URL');}
  if(!['postgres:','postgresql:'].includes(url.protocol)||!url.pathname||url.pathname==='/')throw setupError('Use a named PostgreSQL test database');
+ const threadOption=env.POKEPOST_TEST_ENABLE_THREADS;
+ if(threadOption!==undefined&&!['','false','true'].includes(threadOption))throw setupError('POKEPOST_TEST_ENABLE_THREADS must be true or false');
  const bumpOption=env.POKEPOST_TEST_ENABLE_BUMPS;
  if(bumpOption!==undefined&&!['','false','true'].includes(bumpOption))throw setupError('POKEPOST_TEST_ENABLE_BUMPS must be true or false');
- return {bumpsEnabled:bumpOption==='true',clientId,guildIds,token:env.POKEPOST_TEST_TOKEN,databaseUrl:env.POKEPOST_TEST_DATABASE_URL};
+ return {threadsEnabled:threadOption==='true',bumpsEnabled:bumpOption==='true',clientId,guildIds,token:env.POKEPOST_TEST_TOKEN,databaseUrl:env.POKEPOST_TEST_DATABASE_URL};
 }
 function schema(root=path.join(__dirname,'../migrations')){
  const files=fs.readdirSync(root).filter(f=>/^\d+.*\.sql$/.test(f)).sort();
