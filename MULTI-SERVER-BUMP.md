@@ -33,3 +33,21 @@ Candidate selection excludes queued edits, pending deliveries, manual reposts, i
 Verification passed eight scheduler tests and one integrated scheduler-to-publisher test using local PGlite and simulated Discord. A separate real local PostgreSQL test with two connection pools confirmed lock exclusion and committed slot behavior. Its temporary cluster was removed. It did not connect to the Railway databases or Discord.
 
 Next step is to integrate an explicit opt-in schedule loop into the closed test runtime, review migrations 010 and 011 and initialize the isolated test database before restarting that runtime. Do not run both legacy and multi-server schedulers against the same production feed.
+
+## Closed test loop opt-in 2026-09-29
+
+The test adapter forwards initializeBumps and bumpTick. Only exact POKEPOST_TEST_ENABLE_BUMPS=true enables scheduling; unset, empty or false keeps it off, and other values fail configuration validation. Per-guild bump_enabled remains a separate requirement. No actual environment file is changed.
+
+After database/schema and bot identity checks and Discord readiness, enabled scheduling must initialize successfully before the existing single minute timer is installed. Failed initialization (including a busy advisory lock) closes the runtime without starting the timer. Shutdown during initialization cannot install a late timer. Each guarded minute runs retention, existing refresh/recovery and cleanup, then at most one scheduled bump. Bumps cannot overlap another minute cycle. Disabling scheduling does not disable recovery of already persisted deliveries.
+
+Remaining rollout steps (not performed): stop the old closed test runtime; back up its isolated database; review and apply migrations 010 and 011 in a controlled transaction with pre/post schema checks and update the test marker hash only after verifying the complete expected schema. The current init command only initializes an empty database: it does NOT upgrade an existing marker with an old hash, and running these migrations alone does not satisfy the hash guard. Never bypass the identity guard. Confirm test app 1550595818661085335 and guild allowlist 1550119459891576852,1550967873101500566. Review per-guild channels and bump policy, explicitly enable chosen guilds and set POKEPOST_TEST_ENABLE_BUMPS=true, then separately authorize restart and observe future slots, one quiet replacement and cleanup. Unset the opt-in and restart to stop new scheduling; persisted deliveries still recover. No production or legacy scheduler changes are included.
+
+Local validation: 11 launcher/configuration/schema-guard tests passed in the detail workspace (bump-runtime.test.cjs), plus 19 existing guild-bump scheduler/delivery/integration tests against current repository source. The schema tests applied all migrations only to in-memory PGlite and confirmed both run and init reject a stale marker hash. Syntax checks and git diff --check passed. No external PostgreSQL or Discord behavior was exercised in this step.
+
+## Local upgrade operator tool
+
+The dedicated test-upgrade.js now rehearses or applies the reviewed 009/010 to 011 upgrade transactionally, with exact closed-test identity, source and target structural checks, guild scope checks and marker update only after validation. See TEST-DATABASE-UPGRADE.md for required writer shutdown, verified backup, commands and rollback limits. Ordinary test-bot.js init remains unchanged and is not an upgrade command. The tool has not been run against an external database.
+
+## Real closed-test bump verified 2026-10-01
+
+Brio Test's sole active post was replaced by the ordinary 00:00 UTC main-feed slot. Notification suppression, empty mention lists, bumped marker and exact SAP marker were verified; the old post returned Discord Unknown Message after cleanup. No pending delivery remained and the other guild's activation state was unchanged. Only Brio Test was enabled for this test, and bumping was disabled again at 00:00:43 UTC. No schedule, cooldown or profile timestamp was forced forward. Final verification passed at 00:01:46 UTC. Evidence: LIVE-BUMP-RESULT-2026-10-01.md in the detail workspace. Production unchanged.

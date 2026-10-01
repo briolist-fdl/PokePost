@@ -1,0 +1,229 @@
+{
+  "date": "2026-10-01",
+  "baseline": "ad094e846926363678cd3d67b1849c406ef4507e",
+  "textNormalization": "CRLF to LF; PNG bytes unchanged",
+  "selectedFiles": [
+    ".env.test.example",
+    "MULTI-SERVER-BUMP.md",
+    "src/profileRenderer.js",
+    "src/testEnvironment.js",
+    "src/testRuntime.js",
+    "test-bot.js",
+    "TEST-DATABASE-UPGRADE.md",
+    "src/testDatabaseUpgrade.js",
+    "src/testUpgradeSchemas.json",
+    "test-upgrade.js",
+    "assets/emojis/pokeball-flat-source.png",
+    "assets/emojis/pokeball-flat-128.png"
+  ],
+  "files": [
+    {
+      "path": ".env.test.example",
+      "sha256": "8b5952c65b576aee6dc73459503549adf82c71ec3126f5d208f5d6077e903f6c"
+    },
+    {
+      "path": "MULTI-SERVER-BUMP.md",
+      "sha256": "47e9144176f3494c212b71fafcac7b24df72cf4da974fb76f59f0074d642f39d"
+    },
+    {
+      "path": "TEST-DATABASE-UPGRADE.md",
+      "sha256": "2aa5ee8a6aedf732045d6eadb3df7ad7aec8b5d5135fd5311ea7edb8dfd74bc8"
+    },
+    {
+      "path": "assets/emojis/pokeball-flat-128.png",
+      "sha256": "eba91dd01a28464fd1173a22a4b8055ecd915f4f5abfffd45d50954f9e949fe1"
+    },
+    {
+      "path": "assets/emojis/pokeball-flat-source.png",
+      "sha256": "ed322a04d7067f8eb10dff90653e5c3043cf9e2034c686ad22ee6aeee2ba6b8e"
+    },
+    {
+      "path": "migrations/001-guild-settings.sql",
+      "sha256": "80afddf5776a5da827dacce1a53b3ed1c654d62483ce1406bdcc8ea9cf400f0f"
+    },
+    {
+      "path": "migrations/002-shared-profiles.sql",
+      "sha256": "22c43cead8fefce629babb0afc6681cda9dc31197c4ad190f60662f2feb3e98a"
+    },
+    {
+      "path": "migrations/003-profile-extras.sql",
+      "sha256": "1bf311a438fe34c3fa16b635224f9e8b6ff145b70e71de459f01a80afec3e2ad"
+    },
+    {
+      "path": "migrations/004-optional-local-feed.sql",
+      "sha256": "24df11933489d82c0f470484ff094265ce09861d55d61d82c85aed9dc990709c"
+    },
+    {
+      "path": "migrations/005-group-threads.sql",
+      "sha256": "4dd55aaf7846f500f1d3fda72e0e9afb7fbca3aafb9888b33ddc6bfbc2ea5dff"
+    },
+    {
+      "path": "migrations/006-profile-refresh-queue.sql",
+      "sha256": "3845a2e1809dfb3a11a2504d5d3345fa93bc5b411eccd56b67433163e83215a7"
+    },
+    {
+      "path": "migrations/007-durable-delivery.sql",
+      "sha256": "bfceafb0720933f9c4d3445ddcbd419532dee55a082def924dd5619809b79b5f"
+    },
+    {
+      "path": "migrations/008-owner-actions.sql",
+      "sha256": "5cbf8881adec3868ea23f492778ca3134f209023e18f53381c0d397ff3f96f96"
+    },
+    {
+      "path": "migrations/009-guild-moderation.sql",
+      "sha256": "0c8a16355f20c6d706d48c60f444e40e7c822e4196ee60b4fd1026b184526b8a"
+    },
+    {
+      "path": "migrations/010-bump-delivery.sql",
+      "sha256": "7cbf503d3a2ef68859b90864b4f559579ee3ecb6f288ab7369ff9d935317dcc6"
+    },
+    {
+      "path": "migrations/011-guild-bump-schedule.sql",
+      "sha256": "039a007e9f6a27121644531f7171dc144e28047c51666a068c5cfcb77b6be112"
+    },
+    {
+      "path": "src/activationStore.js",
+      "sha256": "66b2861dfb74dd8771cebcec225b8bce502ba9443a335b571e93237c7d77853e"
+    },
+    {
+      "path": "src/bumpScheduler.js",
+      "sha256": "995f77554851080163bd7a7a2cd2132d655f901e0f7a211aebbbbe196d0ad45c"
+    },
+    {
+      "path": "src/dataRetention.js",
+      "sha256": "e8cb7faf1976c9bfdf75ce688fa665deac5445a5218e9c4a58d786dfb931062b"
+    },
+    {
+      "path": "src/guildBumpScheduler.js",
+      "sha256": "dab76668ea53a3aee3881ccb337470e3f6e843dc88a0a2a000c8960480e160ff"
+    },
+    {
+      "path": "src/guildModeration.js",
+      "sha256": "b91eef1e520e4e3ca8039bba93bd2b2c1ac69f41f94e4695987205bab1b7e552"
+    },
+    {
+      "path": "src/guildOwnerStore.js",
+      "sha256": "28ba089d255f6a572447b802eb81f4e8ea0885e13b022483b00582b92b381a76"
+    },
+    {
+      "path": "src/guildProfileCommands.js",
+      "sha256": "9824a7c3d7a6b1bd2d5393987c50581148cecfb0575bfc1d52fa0c7522e89b5c"
+    },
+    {
+      "path": "src/guildProfileForm.js",
+      "sha256": "8cb0cf9ccc4701fe0cd7e79e8d2faecd3edd2a847272d5ee3d3ce8a1b5f2b412"
+    },
+    {
+      "path": "src/guildProfileRuntime.js",
+      "sha256": "00fe92e8c1ae1f8d4b85787503692935a7b2bd33ea8c394f9d6167e50299992e"
+    },
+    {
+      "path": "src/guildPublisher.js",
+      "sha256": "5774b93576c31814fd8b441d268f98afabcf8865e425af90411595c520344dca"
+    },
+    {
+      "path": "src/guildSettings.js",
+      "sha256": "b7b68c9389a8a7f6730c51508e65a74005b9a8539e539c3f4057206949eb3a9d"
+    },
+    {
+      "path": "src/importSharedProfiles.js",
+      "sha256": "dc97aa0c518d3e0cca6573fbddccb292a28bec6433083f51a3e7ba666303ff72"
+    },
+    {
+      "path": "src/moderateRegion.js",
+      "sha256": "17dee0632d265b4892dd70ba34f30fcc2c4aca7e3e2535a6e14931645c2ff40e"
+    },
+    {
+      "path": "src/moderateRemove.js",
+      "sha256": "05649f90a3df172a52dc2224b30a3c2502fc0337d094bb0b9e5fd9fdcbe9f427"
+    },
+    {
+      "path": "src/profileErasure.js",
+      "sha256": "03c5249658cd08b1f335ba6c6120f13efa61a10cdf6e9a692e1cec37aafcec56"
+    },
+    {
+      "path": "src/profileErasureStore.js",
+      "sha256": "75bcd3ee7322793cee819eca49cc489d32f44a58dc0a7ca4c64590761fc406b1"
+    },
+    {
+      "path": "src/profileExtras.js",
+      "sha256": "1719b1835464c6d74f2b295e8c2f4c203b0190abc2cb5912842565a74862710a"
+    },
+    {
+      "path": "src/profileForm.js",
+      "sha256": "36bddd9e3dc225132d7945476bbbf05f6e9df347d5fe1f0f20e912802238e15a"
+    },
+    {
+      "path": "src/profileFormStore.js",
+      "sha256": "a6d0c122da857771424e2dd85db493592d63cf9c2ac51e4a6652124b97606be6"
+    },
+    {
+      "path": "src/profileRefreshWorker.js",
+      "sha256": "8075c4ef8e84174f1e4ad4bb7bea10238afbe497c99a4ed34f8921438cf2db64"
+    },
+    {
+      "path": "src/profileRenderer.js",
+      "sha256": "13220ed84d01c797fdae2ef2bf6fadf37cc7388fc3d198243a75103b2ee0db44"
+    },
+    {
+      "path": "src/serverSetup.js",
+      "sha256": "ee50cc8b611dc1e11634bd94bf2ed8e5b5ebfa5a9c72d0c424c83cbedc741a75"
+    },
+    {
+      "path": "src/serverSetupStore.js",
+      "sha256": "aa52b5beeacde257854ec1bd79d5bbb820187f3e71ecf00fe0c1cd51d4042258"
+    },
+    {
+      "path": "src/shared/botDirectory.js",
+      "sha256": "2c41eaf6ab91cc7404ebc22abf24678fd54433a95429ac4e20562024d1db2064"
+    },
+    {
+      "path": "src/shared/supportDevelopment.js",
+      "sha256": "f5c846a203d2bb462d3fd6f0c146afa4addea3b888054ef58097f6ea98459dd7"
+    },
+    {
+      "path": "src/testCommands.js",
+      "sha256": "30165808b9d0220138fd7b197eb26aed5a4a82eeab7d4421e605c7ed18004c02"
+    },
+    {
+      "path": "src/testDatabaseUpgrade.js",
+      "sha256": "119c1a2d665ed70c33aab7dfb1727da53e38a9a0ed2df3349bf820b5d0198633"
+    },
+    {
+      "path": "src/testDiagnostics.js",
+      "sha256": "b15fb3f57a7399a969edfbdf5968894df89ed6c43a13e9bb86cf79a3dd7fa015"
+    },
+    {
+      "path": "src/testEnvironment.js",
+      "sha256": "c439ecb6b865391ec2e2f7aeb7a8b58a25a88b87c96400004f871a793f478549"
+    },
+    {
+      "path": "src/testRuntime.js",
+      "sha256": "cc6c550ff754c1fb089569a0880f6b39da62a10728770ae9374d596b5e2677a3"
+    },
+    {
+      "path": "src/testUpgradeSchemas.json",
+      "sha256": "04697e64cdca4c579183f3317be96fa76f6df40d9b1d16575996ec890b7e8bac"
+    },
+    {
+      "path": "src/threadRouter.js",
+      "sha256": "43efa5da480e11e288ca3ca976fab4eb43d6d81d1cd7a5126736ac3eda5cfa60"
+    },
+    {
+      "path": "src/threadRoutingConfig.js",
+      "sha256": "9fe140cdf02d56aa9dbcb91e3359c9025651e7f6ca7b4d149ce547ad99d7c674"
+    },
+    {
+      "path": "src/vivillonGroups.js",
+      "sha256": "ace2b25709285585fe91c0977d3c064ade5731ea1169162d917b2e03d223bbda"
+    },
+    {
+      "path": "test-bot.js",
+      "sha256": "0a1c0611aab73c6a5f4b7f27ec0284ebdb6d479d53e4b2c7fd0d41da84e7a8d3"
+    },
+    {
+      "path": "test-upgrade.js",
+      "sha256": "9a4899d665a4104ad4a51f006b173d775b83270d07edbf85642dd1afd650ed14"
+    }
+  ]
+}

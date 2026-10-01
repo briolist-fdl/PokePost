@@ -13,6 +13,6 @@ function createTestRuntime({pool,client,guildIds,logger=console}){
   if(i.isModalSubmit()&&i.customId.startsWith('post_server:'))return setup.submit(i);
   if(!await runtime.handle(i))await i.reply({content:'This feature is not available in the test version.',flags:MessageFlags.Ephemeral});
  }
- return {handle,refreshTick:runtime.refreshTick,cleanupTick:runtime.cleanupTick};
+ return {handle,initializeBumps:runtime.initializeBumps,bumpTick:runtime.bumpTick,refreshTick:runtime.refreshTick,cleanupTick:runtime.cleanupTick};
 }
 module.exports={createTestRuntime};

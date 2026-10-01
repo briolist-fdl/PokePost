@@ -41,13 +41,20 @@ async function main(){
   let busy=false;
   client.once(Events.ClientReady,()=>{
    if(closing)return;
+   track(async()=>{
+   try{
+    if(config.bumpsEnabled&&await runtime.initializeBumps()!==true)throw Error('Bump initialization lock unavailable');
+    if(closing)return;
    timer=setInterval(()=>{if(busy||closing)return;busy=true;track(async()=>{try{
     diagnostics.prune();
     try{await retention.tick();}catch(error){report('test_retention_failed',error);}
     await runtime.refreshTick();await runtime.cleanupTick();
+    if(config.bumpsEnabled)await runtime.bumpTick();
    }finally{busy=false;}});},60000);
    console.log('Test bot ready. Refresh and cleanup run once per minute.');
-   diagnostics.log({event:'test_bot_ready'});
+   diagnostics.log({event:'test_bot_ready',bumpsEnabled:config.bumpsEnabled});
+   }catch(error){report('test_bump_initialization_failed',error);process.exitCode=1;void stop();}
+   });
   });
   await client.login(config.token);
   process.once('SIGINT',()=>{void stop();});process.once('SIGTERM',()=>{void stop();});
