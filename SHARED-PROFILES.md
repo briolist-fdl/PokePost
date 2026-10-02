@@ -44,13 +44,13 @@ or destructive global-delete command is added here.
 
 ## Explicit migration
 
-After approval, stop all old/new writers, back up the database, apply migrations 001
-and 002 and verify/save the home-server settings using the channel validator. Call
+After approval, stop all old/new writers, back up the database, apply the reviewed
+current schema (001 through 011) and verify/save the home-server settings using the channel validator. Call
 `importSharedProfiles` with a dedicated client and the verified source guild ID.
 The helper never reads environment variables or creates a connection itself.
 
 Import requires an empty destination profile store, validates every source channel,
-preserves profile codes, timestamps, message references and republishing preference,
+preserves profile codes, optional fields, timestamps, message references and explicit republishing preference (missing consent becomes false),
 and activates only profiles with an existing public-message reference. Removed
 profiles stay saved but inactive. It creates no activation on any other server.
 An import marker prevents reruns from restoring removed data; a different source
@@ -72,3 +72,9 @@ separately instead of using this legacy import.
    and publishing behavior; never infer activation from SAP/followed posts.
 5. Exercise the complete two-server Discord flow and migration rollback/recovery,
    then explicitly approve production migration, registration and deployment.
+
+## Import rehearsal update (2026-10-02)
+
+See IMPORT-ROLLBACK-REHEARSAL-20261002.md for current import prerequisites,
+legacy thread adoption, the tested database restoration boundary and unresolved
+post-write rollback/button-transition gates. Earlier integration notes above are historical.

@@ -23,8 +23,8 @@ function createGuildThreadDelivery({pool,client,render,guildIds,logger=console,n
   const me=guild.members.me||await guild.members.fetchMe();const permissions=[PermissionFlagsBits.ViewChannel,PermissionFlagsBits.ReadMessageHistory];if(write)permissions.push(PermissionFlagsBits.SendMessagesInThreads);
   if(!ch.permissionsFor(me)?.has(permissions)||write&&ch.locked)throw Error('Thread unavailable');return ch;
  }
- function owns(message,g,u){return message.author.id===client.user.id&&message.components?.some(row=>row.components?.some(b=>new RegExp(`^guild_copy:${g}:${u}:\\d+$`).test(b.customId||'')));}
- async function existing(ch,id,g,u){if(!id)return null;try{const m=await ch.messages.fetch(id);if(!owns(m,g,u))throw Error('Thread post ownership mismatch');return m;}catch(e){if(e.code===10008)return null;throw e;}}
+ function owns(message,g,u,legacy=false){return message.author.id===client.user.id&&message.components?.some(row=>row.components?.some(b=>(new RegExp(`^guild_copy:${g}:${u}:\\d+$`).test(b.customId||'')||legacy&&(b.customId===`copy_friend_code:${u}`||new RegExp(`^copy_friend_code:${u}:\\d+$`).test(b.customId||'')))));}
+ async function existing(ch,id,g,u,legacy=false){if(!id)return null;try{const m=await ch.messages.fetch(id);if(!owns(m,g,u,legacy))throw Error('Thread post ownership mismatch');return m;}catch(e){if(e.code===10008)return null;throw e;}}
  async function retire(db,g,u,state){
   if(state.attempted_at&&!state.message_id)throw review();
   try{await db.query('BEGIN');if(state.message_id)await db.query('INSERT INTO poke_post_post_cleanup(guild_id,discord_user_id,channel_id,message_id) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING',[g,u,state.thread_id,state.message_id]);await db.query('DELETE FROM poke_post_thread_posts WHERE guild_id=$1 AND discord_user_id=$2',[g,u]);await db.query('COMMIT');}catch(e){await db.query('ROLLBACK').catch(()=>{});throw e;}
@@ -39,7 +39,8 @@ function createGuildThreadDelivery({pool,client,render,guildIds,logger=console,n
   if(action.kind==='move'){await retire(db,g,u,state);return true;}
   const content=await render(profile);if(typeof content!=='string'||content.length>2000)throw Error('Invalid thread content');
   const payload={content,components:scopedCopyButtons(profile),allowedMentions:{parse:[]}};
-  const old=state&&await existing(ch,state.message_id,g,u);
+  const imported=!!state?.message_id&&(await db.query("SELECT 1 FROM poke_post_imports WHERE import_key='legacy-shared-v1' AND guild_id=$1",[g])).rows.length>0;
+  const old=state&&await existing(ch,state.message_id,g,u,imported);
   if(ch.archived)await ch.setArchived(false,'Update configured Poké-Post group feed');
   if(old){await old.edit(payload);await db.query('UPDATE poke_post_thread_posts SET content_hash=$3,checked_at=$4 WHERE guild_id=$1 AND discord_user_id=$2',[g,u,fingerprint(profile),now()]);return true;}
   if(state?.attempted_at)throw review();
