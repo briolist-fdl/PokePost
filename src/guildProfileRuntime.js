@@ -1,3 +1,4 @@
+const {createCopyTransition}=require('./copyTransition');
 const {createGuildThreadDelivery}=require('./guildThreadDelivery');
 const {createGuildBumpScheduler}=require('./guildBumpScheduler');
 const {createGuildModeration}=require('./guildModeration');
@@ -15,6 +16,7 @@ const {createGuildPublisher}=require('./guildPublisher');
 // is created here. The caller provides the Discord client and profile renderer.
 function createGuildProfileRuntime({pool,client,render,logger=console,guildIds=[]}) {
  const threads=guildIds.length?createGuildThreadDelivery({pool,client,render,guildIds,logger}):null;
+ const copyTransition=guildIds.length?createCopyTransition({pool,client,mode:'shared',guildIds}):async()=>false;
  const publisher=createGuildPublisher({pool,client,render,logger});
  const scheduler=createGuildBumpScheduler({pool,bump:publisher.bump,logger});
  const guilds=createGuildSettingsStore(pool),formStore=createProfileFormStore(pool),activationStore=createActivationStore(pool);
@@ -27,7 +29,7 @@ function createGuildProfileRuntime({pool,client,render,logger=console,guildIds=[
  async function handle(i) {
   if(i.isChatInputCommand())return await erasure.command(i)||await moderation.command(i)||commands.command(i);
   if(i.isModalSubmit()&&i.customId.startsWith('guild_profile:')){await form.submit(i);return true;}
-  if(i.isButton())return await erasure.button(i)||commands.button(i);
+  if(i.isButton())return await copyTransition(i)||await erasure.button(i)||commands.button(i);
   return false;
  }
  let recoveryTurn=true,running=false;

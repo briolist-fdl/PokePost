@@ -29,6 +29,10 @@ const pool = new Pool({
     : false
 });
 
+// Explicit rollback compatibility; normal production startup leaves it disabled.
+const rollbackCopyEnabled=process.env.POKEPOST_LEGACY_COPY_COMPAT==='true';
+const rollbackCopy=rollbackCopyEnabled?require('./src/copyTransition').createCopyTransition({pool,client,mode:'legacy',guildIds:[process.env.DISCORD_GUILD_ID]}):async()=>false;
+
 const VIVILLON_PATTERNS = new Set([
   "archipelago",
   "continental",
@@ -90,6 +94,10 @@ const handleRegionModeration = createRegionModerator({
 client.once(Events.ClientReady, async readyClient => {
   console.log(`Logged in as ${readyClient.user.tag}`);
 
+  if(rollbackCopyEnabled){
+    try { await require('./src/legacyRollbackStartup').assertLegacyRollbackStartup({pool,guildId:process.env.DISCORD_GUILD_ID,mainChannelId:INTERNATIONAL_CHANNEL_ID,localChannelId:TUNDRA_CHANNEL_ID,threads:require('./src/threadRoutingConfig').resolveThreadConfig(process.env.DISCORD_GUILD_ID,process.env.VIVILLON_THREADS_JSON),bumpEnabled:String(process.env.BUMP_ENABLED).toLowerCase()==='true'}); }
+    catch { console.error('Rollback startup refused: check the marker, feed/thread configuration and paused bumps.');client.destroy();await pool.end();process.exitCode=1;return; }
+  }
   await ensureDatabaseConnection();
   await startThreadRouting().catch(error => console.error('Thread routing initialization failed:', error));
 
@@ -174,6 +182,7 @@ client.on(Events.InteractionCreate, async interaction => {
     }
 
     if (interaction.isButton()) {
+      if (await rollbackCopy(interaction)) return;
       if (interaction.customId.startsWith("copy_friend_code:")) {
         await handleCopyButton(interaction);
       }

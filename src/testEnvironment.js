@@ -38,6 +38,7 @@ async function prepareTestDatabase(pool,config,initialize=false){
   for(const table of ['poke_post_guilds','poke_post_delivery_attempts','poke_post_post_cleanup','poke_post_thread_posts']){
    if((await db.query(`SELECT 1 FROM ${table} WHERE NOT(guild_id=ANY($1::text[])) LIMIT 1`,[config.guildIds])).rows.length)throw setupError('Database contains a server outside the test list');
   }
+  if((await db.query("SELECT 1 FROM poke_post_imports WHERE import_key='legacy-rollback-v1'")).rows.length)throw setupError('Legacy rollback completed; shared runtime must stay stopped');
   await db.query('COMMIT');
  }catch(error){await db.query('ROLLBACK').catch(()=>{});throw error;}finally{db.release();}
 }

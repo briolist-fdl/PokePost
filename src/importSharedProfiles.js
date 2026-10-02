@@ -6,6 +6,7 @@ async function importSharedProfiles(db, guildId) {
   await db.query('BEGIN');
   try {
     await db.query('LOCK TABLE poke_post_imports IN EXCLUSIVE MODE');
+    if((await db.query("SELECT 1 FROM poke_post_imports WHERE import_key='legacy-rollback-v1'")).rows.length)throw Error('Legacy rollback completed; review a new cutover before reimport');
     const previous = (await db.query("SELECT * FROM poke_post_imports WHERE import_key = 'legacy-shared-v1'")).rows[0];
     if (previous) {
       if (previous.guild_id !== guildId) throw Error('Legacy data was imported into a different server');
