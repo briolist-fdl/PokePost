@@ -1,14 +1,14 @@
-# Privacy Policy for Poké-Post
+# Privacy Policy for PokéPost
 
 Effective date: 2026-07-03
 
-Poké-Post is a Discord bot for structured Pokémon GO friend code posting.
+PokéPost is a Discord bot for structured Pokémon GO friend code posting.
 
-This privacy policy explains what data Poké-Post stores and why.
+This privacy policy explains what data PokéPost stores and why.
 
-## Data Poké-Post may store
+## Data PokéPost may store
 
-Poké-Post may store data submitted through `/post` commands, including:
+PokéPost may store data submitted through `/post` commands, including:
 
 * Discord user IDs
 * Pokémon GO usernames
@@ -19,11 +19,11 @@ Poké-Post may store data submitted through `/post` commands, including:
 * republishing preferences
 * message references needed to edit, repost, or delete bot-created profile posts
 
-Poké-Post may also store channel and server references needed to post friend code profiles in configured Discord channels.
+PokéPost may also store channel and server references needed to post friend code profiles in configured Discord channels.
 
 ## Public profile posts
 
-When a user creates or reposts a profile, Poké-Post may publish the submitted profile information in configured Discord channels.
+When a user creates or reposts a profile, PokéPost may publish the submitted profile information in configured Discord channels.
 
 This may include:
 
@@ -38,7 +38,7 @@ Users should only submit information they are comfortable sharing in the configu
 
 ## Why this data is used
 
-Poké-Post uses this data to:
+PokéPost uses this data to:
 
 * create and manage friend code profiles
 * post profiles in configured Discord channels
@@ -48,13 +48,13 @@ Poké-Post uses this data to:
 * apply republishing preferences
 * maintain clean friend code feeds
 
-## What Poké-Post does not do
+## What PokéPost does not do
 
-Poké-Post is not designed as a general-purpose message archive.
+PokéPost is not designed as a general-purpose message archive.
 
-Poké-Post does not sell user data.
+PokéPost does not sell user data.
 
-Poké-Post does not share stored data with advertisers or third parties.
+PokéPost does not share stored data with advertisers or third parties.
 
 ## Data retention
 
@@ -69,7 +69,7 @@ delete hosting logs. Contact the maintainer for requests concerning these record
 
 ### Profile storage
 
-Poké-Post stores profile data for as long as the user keeps a profile registered with the bot.
+PokéPost stores profile data for as long as the user keeps a profile registered with the bot.
 
 Users can delete their saved profile using:
 
@@ -83,13 +83,13 @@ Deleting a profile removes the saved profile data used by the bot and may remove
 
 Users can delete their own saved profile using the bot command above.
 
-Server administrators or users may also request deletion of stored Poké-Post data by contacting the maintainer through the GitHub repository:
+Server administrators or users may also request deletion of stored PokéPost data by contacting the maintainer through the GitHub repository:
 
 https://github.com/briolist-fdl/poke-post
 
 ## Open source
 
-Poké-Post is built as an open source community tool.
+PokéPost is built as an open source community tool.
 
 The source code is available here:
 
@@ -97,4 +97,4 @@ https://github.com/briolist-fdl/poke-post
 
 ## Changes
 
-This policy may be updated when Poké-Post changes how it stores or processes data.
+This policy may be updated when PokéPost changes how it stores or processes data.

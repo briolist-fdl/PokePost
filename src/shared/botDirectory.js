@@ -1,6 +1,6 @@
 const BOTS = {
   'poke-post': {
-    name: 'Poké-Post',
+    name: 'PokéPost',
     githubUrl: 'https://github.com/briolist-fdl/poke-post',
     topggUrl: '',
     discordBotListUrl: '',

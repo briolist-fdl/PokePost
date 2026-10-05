@@ -5,7 +5,7 @@ function createGuildModeration({publisher,getSettings,logger=console}){
   if(i.commandName!=='post'||i.options.getSubcommandGroup(false)!=='admin')return false;
   const sub=i.options.getSubcommand();if(!['region','remove'].includes(sub))return false;
   const reply=content=>i.reply({content,flags:MessageFlags.Ephemeral,allowedMentions:{parse:[]}});
-  if(!i.guildId||!await getSettings(i.guildId)){await reply('Open this command in a server where Poké-Post is configured.');return true;}
+  if(!i.guildId||!await getSettings(i.guildId)){await reply('Open this command in a server where PokéPost is configured.');return true;}
   if(!i.memberPermissions?.has(PermissionFlagsBits.ManageMessages)){await reply('You need Manage Messages to moderate profile posts.');return true;}
   const raw=String(i.options.get('user',true)?.value||'').trim();
   const match=/^(?:<@!?(\d{17,20})>|(\d{17,20}))$/.exec(raw),userId=match?.[1]||match?.[2];

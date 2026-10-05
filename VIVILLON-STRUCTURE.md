@@ -25,7 +25,7 @@ Group routing is independent: every region is eligible for its corresponding gro
 including the server's local region. Tundraheim keeps Tundra outside International,
 but includes Tundra in Blizzard with Icy Snow and Polar.
 
-Poké-Post owns routing, initially to existing threads. Automatic creation is later
+PokéPost owns routing, initially to existing threads. Automatic creation is later
 work. Routing never grants activation in another server or changes follower consent.
 Advanced organization may eventually be premium; no payment restriction exists.
 

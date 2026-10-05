@@ -21,7 +21,7 @@ function createServerSetup({store,now=()=>Date.now(),logger=console}) {
   const sessions=new Map();
   async function guard(i) {
     if(!i.guildId || i.guild?.id!==i.guildId || !i.memberPermissions?.has(PermissionFlagsBits.ManageMessages)) {
-      await i.reply({content:'You need Manage Messages in this server to configure Poké-Post.',flags:MessageFlags.Ephemeral});return false;
+      await i.reply({content:'You need Manage Messages in this server to configure PokéPost.',flags:MessageFlags.Ephemeral});return false;
     }return true;
   }
   function session(i,data) {

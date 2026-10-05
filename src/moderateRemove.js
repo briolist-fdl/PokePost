@@ -51,7 +51,7 @@ function createPostRemover({ pool, client, configuredGuildId, logger = console }
             new RegExp('^copy_friend_code:' + userId + ':\\d+$').test(button.customId || '')));
           if (message.author.id !== client.user.id || !ownsPost) {
             await db.query('ROLLBACK');
-            return interaction.editReply({ content: 'That message is not a Poké-Post profile post belonging to the specified user.' });
+            return interaction.editReply({ content: 'That message is not a PokéPost profile post belonging to the specified user.' });
           }
           await message.delete().catch(error => { if (error.code !== 10008) throw error; });
         }

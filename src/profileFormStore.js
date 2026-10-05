@@ -27,7 +27,7 @@ function createProfileFormStore(pool) {
    await db.query('BEGIN');
    await db.query('SELECT pg_advisory_xact_lock(hashtextextended($1,7260518))',[actor]);
    const config=settings((await db.query('SELECT * FROM poke_post_guilds WHERE guild_id=$1',[guild])).rows[0]);
-   if(!config)throw Error('This server has not configured Poké-Post yet.');
+   if(!config)throw Error('This server has not configured PokéPost yet.');
    let p=(await db.query('SELECT * FROM poke_post_profiles WHERE discord_user_id=$1 FOR UPDATE',[actor])).rows[0];
    const a=(await db.query('SELECT * FROM poke_post_activations WHERE guild_id=$1 AND discord_user_id=$2 FOR UPDATE',[guild,actor])).rows[0];
    if((p?String(p.revision):null)!==expected.revision||activationStamp(a)!==expected.activationStamp)throw stale();

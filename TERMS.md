@@ -1,16 +1,16 @@
-# Terms of Service for Poké-Post
+# Terms of Service for PokéPost
 
 Effective date: 2026-07-03
 
-Poké-Post is a Discord bot for structured Pokémon GO friend code posting.
+PokéPost is a Discord bot for structured Pokémon GO friend code posting.
 
-By adding or using Poké-Post in a Discord server, you agree to these terms.
+By adding or using PokéPost in a Discord server, you agree to these terms.
 
 ## Use of the bot
 
-Poké-Post may be used to create, manage, and publish Pokémon GO friend code profiles in configured Discord channels.
+PokéPost may be used to create, manage, and publish Pokémon GO friend code profiles in configured Discord channels.
 
-Users are responsible for the information they submit through Poké-Post commands, including:
+Users are responsible for the information they submit through PokéPost commands, including:
 
 * Pokémon GO usernames
 * trainer codes
@@ -19,29 +19,29 @@ Users are responsible for the information they submit through Poké-Post command
 * optional Campfire usernames
 * republishing preferences
 
-Server administrators are responsible for how Poké-Post is configured in their server, including which channels are used for friend code feeds.
+Server administrators are responsible for how PokéPost is configured in their server, including which channels are used for friend code feeds.
 
 ## Public posting
 
-Poké-Post is designed to publish submitted friend code profiles in Discord channels.
+PokéPost is designed to publish submitted friend code profiles in Discord channels.
 
 Do not submit information that you do not want shown in the configured friend code channels.
 
 ## Republishing
 
-Poké-Post may support republishing or reposting profile information when the user has enabled that option.
+PokéPost may support republishing or reposting profile information when the user has enabled that option.
 
 Users can manage their republishing preference through the bot commands.
 
 ## Permissions
 
-Poké-Post requires Discord permissions needed to use slash commands, send messages in configured channels, and manage bot-created profile posts where applicable.
+PokéPost requires Discord permissions needed to use slash commands, send messages in configured channels, and manage bot-created profile posts where applicable.
 
-Do not grant Poké-Post permissions that are not needed for your server setup.
+Do not grant PokéPost permissions that are not needed for your server setup.
 
 ## Acceptable use
 
-You may not use Poké-Post to:
+You may not use PokéPost to:
 
 * harass, spam, or abuse users
 * submit misleading or abusive profile information
@@ -52,29 +52,29 @@ You may not use Poké-Post to:
 
 ## Availability
 
-Poké-Post is provided as-is.
+PokéPost is provided as-is.
 
 The bot may be changed, updated, interrupted, or discontinued at any time.
 
-No guarantee is made that Poké-Post will always be available or error-free.
+No guarantee is made that PokéPost will always be available or error-free.
 
 ## Responsibility
 
-Server owners and administrators are responsible for reviewing how Poké-Post is configured and used in their own servers.
+Server owners and administrators are responsible for reviewing how PokéPost is configured and used in their own servers.
 
 The maintainer is not responsible for misuse of the bot, incorrect configuration, or information submitted by users.
 
 ## Support development
 
-Poké-Post is built as an open source community tool.
+PokéPost is built as an open source community tool.
 
-If Poké-Post helps your server, you can support further development by contributing feedback or issues on GitHub, or by supporting the developer here:
+If PokéPost helps your server, you can support further development by contributing feedback or issues on GitHub, or by supporting the developer here:
 
 https://buymeacoffee.com/andreasviken
 
 ## Changes
 
-These terms may be updated when Poké-Post changes functionality, hosting, or data handling.
+These terms may be updated when PokéPost changes functionality, hosting, or data handling.
 
 ## Contact
 

@@ -4,7 +4,7 @@ This local operator tool uses only `.env.test`, validates the database marker an
 
 ## Inspect
 
-Run `node test-recovery.js inspect` in the Poké-Post repository. The output lists unresolved attempts using IDs, timestamps and the delivery nonce. It does not print tokens, database URLs or profile payloads. Inspect is read-only.
+Run `node test-recovery.js inspect` in the PokéPost repository. The output lists unresolved attempts using IDs, timestamps and the delivery nonce. It does not print tokens, database URLs or profile payloads. Inspect is read-only.
 
 An empty pending list needs no action. For a pending attempt, inspect its destination channel and identify the exact post from that delivery. Never select the older source post simply because it has identical text.
 

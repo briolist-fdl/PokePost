@@ -5,7 +5,7 @@ function createProfileErasure({store,now=()=>Date.now(),logger=console}){
  const reply=(i,content)=>i.reply({content,flags:MessageFlags.Ephemeral,allowedMentions:{parse:[]}});
  async function command(i){
   if(i.commandName!=='post'||i.options.getSubcommandGroup(false)||i.options.getSubcommand()!=='erase')return false;
-  if(!i.guildId){await reply(i,'Open this command in a server with Poké-Post.');return true;}
+  if(!i.guildId){await reply(i,'Open this command in a server with PokéPost.');return true;}
   await i.deferReply({flags:MessageFlags.Ephemeral});
   const snap=await store.snapshot(i.user.id);
   if(!snap.exists){await i.editReply({content:'You do not have a saved profile to delete.'});return true;}

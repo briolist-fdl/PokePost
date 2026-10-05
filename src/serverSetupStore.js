@@ -14,7 +14,7 @@ function createServerSetupStore(pool) {
     return { ...settings, threads: Object.fromEntries(rows.map(row=>[row.group_key,row.thread_id])) };
   }
   async function change(guild, work) {
-    if (!idValid(guild?.id)) throw Error('Choose a server before configuring Poké-Post.');
+    if (!idValid(guild?.id)) throw Error('Choose a server before configuring PokéPost.');
     const db = await pool.connect();
     try {
       await db.query('BEGIN');
@@ -51,7 +51,7 @@ function createServerSetupStore(pool) {
         if (!thread || thread.guildId !== guild.id || ![ChannelType.PublicThread,ChannelType.AnnouncementThread].includes(thread.type)) throw Error('Choose an existing public thread in this server.');
         if (thread.locked) throw Error('Unlock the thread before using it for a group feed.');
         const me=guild.members.me || await guild.members.fetchMe();
-        if (!thread.permissionsFor(me)?.has([PermissionFlagsBits.ViewChannel,PermissionFlagsBits.ReadMessageHistory,PermissionFlagsBits.SendMessagesInThreads])) throw Error('Poké-Post needs permission to view the thread, read its history and send messages there.');
+        if (!thread.permissionsFor(me)?.has([PermissionFlagsBits.ViewChannel,PermissionFlagsBits.ReadMessageHistory,PermissionFlagsBits.SendMessagesInThreads])) throw Error('PokéPost needs permission to view the thread, read its history and send messages there.');
         const conflict=(await db.query('SELECT group_key FROM poke_post_group_threads WHERE guild_id=$1 AND thread_id=$2 AND group_key<>$3',[guild.id,threadId,group])).rows[0];
         if(conflict) throw Error('That thread is already assigned to another group.');
         await db.query(`INSERT INTO poke_post_group_threads(guild_id,group_key,thread_id) VALUES($1,$2,$3)

@@ -13,7 +13,7 @@ The dedicated `test-upgrade.js` entry point reads `.env.test` only when explicit
 
 ## Rehearse, then apply
 
-From the Poké-Post repository, with the reviewed `.env.test`:
+From the PokéPost repository, with the reviewed `.env.test`:
 
 ```text
 node test-upgrade.js --check --writers-stopped

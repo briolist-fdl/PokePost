@@ -135,7 +135,7 @@ async function deployCommands() {
   const clientId = process.env.DISCORD_CLIENT_ID;
   const guildId = process.env.DISCORD_GUILD_ID;
 
-  console.log("Deploying Poké-Post slash commands...");
+  console.log("Deploying PokéPost slash commands...");
   console.log("Client ID:", clientId);
   console.log("Guild ID:", guildId || "(none)");
   console.log("Deploy global:", deployGlobalCommands);
@@ -156,18 +156,18 @@ async function deployCommands() {
 
   console.log(
     deployGlobalCommands
-      ? "Deploying Poké-Post commands globally."
-      : `Deploying Poké-Post commands to guild ${guildId}.`
+      ? "Deploying PokéPost commands globally."
+      : `Deploying PokéPost commands to guild ${guildId}.`
   );
 
   await rest.put(route, {
     body: commands,
   });
 
-  console.log("Poké-Post slash commands deployed.");
+  console.log("PokéPost slash commands deployed.");
 }
 
 deployCommands().catch((error) => {
-  console.error("Failed to deploy Poké-Post slash commands:", error);
+  console.error("Failed to deploy PokéPost slash commands:", error);
   process.exit(1);
 });

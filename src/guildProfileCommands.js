@@ -11,7 +11,7 @@ function createGuildProfileCommands({form,formStore,activationStore,getSettings,
  const confirmations=new Map();
  const unavailable='Your profile is not active in this server. Use `/post setup` to activate it here.';
  async function action(i,sub){
-  if(!i.guildId||!await getSettings(i.guildId)){await reply(i,'Open this command in a server where Poké-Post is configured.');return;}
+  if(!i.guildId||!await getSettings(i.guildId)){await reply(i,'Open this command in a server where PokéPost is configured.');return;}
   await i.deferReply({flags:MessageFlags.Ephemeral});
   try{
    if(sub==='delete'){
@@ -59,7 +59,7 @@ function createGuildProfileCommands({form,formStore,activationStore,getSettings,
   if(i.commandName!=='post'||i.options.getSubcommandGroup(false))return false;
   const sub=i.options.getSubcommand();if(['delete','repost','republishing','region','add-code','remove-code'].includes(sub)){await action(i,sub);return true;}if(!['setup','edit','view'].includes(sub))return false;
   if(sub!=='view'){await form.open(i,sub);return true;}
-  if(!i.guildId||!await getSettings(i.guildId)){await reply(i,'Open this command in a server where Poké-Post is configured.');return true;}
+  if(!i.guildId||!await getSettings(i.guildId)){await reply(i,'Open this command in a server where PokéPost is configured.');return true;}
   const snap=await formStore.snapshot(i.user.id,i.guildId),p=snap.profile;
   if(!p){await reply(i,'You do not have a saved profile yet. Use `/post setup` first.');return true;}
   const safe=value=>escapeMarkdown(String(value)).replace(/@/g,'@\u200b');

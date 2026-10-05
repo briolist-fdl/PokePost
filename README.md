@@ -1,6 +1,6 @@
-# Poké-Post
+# PokéPost
 
-Poké-Post is a Discord bot for clean Pokémon GO friend code posting.
+PokéPost is a Discord bot for clean Pokémon GO friend code posting.
 
 It lets players create and manage a structured friend code profile, then posts the profile in dedicated Discord channels without turning the channel into a chat feed.
 
@@ -19,7 +19,7 @@ It lets players create and manage a structured friend code profile, then posts t
 
 ## Main command
 
-Poké-Post uses one main slash command:
+PokéPost uses one main slash command:
 
 ```text id="bcwuxr"
 /post
@@ -146,7 +146,7 @@ use. It needs no schema migration or new environment variables.
 
 ## Environment variables
 
-Poké-Post is configured through environment variables.
+PokéPost is configured through environment variables.
 
 ```env id="bdnyav"
 DISCORD_TOKEN=
@@ -224,7 +224,7 @@ npm start
 
 ## Database
 
-Poké-Post uses PostgreSQL.
+PokéPost uses PostgreSQL.
 
 The database connection is read from:
 
@@ -236,7 +236,7 @@ The bot stores user profile data needed to create and manage friend code posts.
 
 ## Permissions
 
-Poké-Post needs the Discord permissions required to:
+PokéPost needs the Discord permissions required to:
 
 * use slash commands
 * send messages in configured friend code channels
@@ -245,7 +245,7 @@ Poké-Post needs the Discord permissions required to:
 
 ## Privacy and data
 
-Poké-Post stores the profile information users submit through `/post setup` and related commands.
+PokéPost stores the profile information users submit through `/post setup` and related commands.
 
 This may include:
 
@@ -258,11 +258,11 @@ This may include:
 * republishing preference
 * message references needed to manage public posts
 
-Poké-Post is not designed as a general-purpose message archive.
+PokéPost is not designed as a general-purpose message archive.
 
 ## Support development
 
-Poké-Post is built as an open source community tool.
+PokéPost is built as an open source community tool.
 
 If it helps your server, you can support further development by voting for the bot when voting pages are available, contributing feedback or issues on GitHub, or supporting the developer here:
 
@@ -332,7 +332,7 @@ link or a message ID. Use a full link when the copy is in another channel or the
 saved profile no longer exists. A bare ID uses the saved profile channel, or the
 command channel when no profile exists.
 
-The bot verifies that the selected message was posted by Poké-Post and that its
+The bot verifies that the selected message was posted by PokéPost and that its
 copy button identifies the requested profile owner. The owner does not need to
 be a server member. Removing a selected older copy leaves a different active post
 unchanged. Removing the active post also disables its automatic bumping. This

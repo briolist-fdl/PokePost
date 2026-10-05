@@ -6,7 +6,7 @@ function createGuildProfileForm({store,getSettings,now=()=>Date.now(),logger=con
  const sessions=new Map();
  async function guard(i) {
   if(!i.guildId||i.guild?.id!==i.guildId){await i.reply({content:'Open this command in the server where you want to use your profile.',flags:MessageFlags.Ephemeral});return false;}
-  if(!await getSettings(i.guildId)){await i.reply({content:'This server has not configured Poké-Post yet. Ask a moderator to set it up.',flags:MessageFlags.Ephemeral});return false;}return true;
+  if(!await getSettings(i.guildId)){await i.reply({content:'This server has not configured PokéPost yet. Ask a moderator to set it up.',flags:MessageFlags.Ephemeral});return false;}return true;
  }
  function token(i,data){
   for(const [key,s]of sessions)if(s.expires<=now()||(s.actor===i.user.id&&s.guild===i.guildId))sessions.delete(key);

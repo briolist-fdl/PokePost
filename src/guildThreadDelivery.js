@@ -41,7 +41,7 @@ function createGuildThreadDelivery({pool,client,render,guildIds,logger=console,n
   const payload={content,components:scopedCopyButtons(profile),allowedMentions:{parse:[]}};
   const imported=!!state?.message_id&&(await db.query("SELECT 1 FROM poke_post_imports WHERE import_key='legacy-shared-v1' AND guild_id=$1",[g])).rows.length>0;
   const old=state&&await existing(ch,state.message_id,g,u,imported);
-  if(ch.archived)await ch.setArchived(false,'Update configured Poké-Post group feed');
+  if(ch.archived)await ch.setArchived(false,'Update configured PokéPost group feed');
   if(old){await old.edit(payload);await db.query('UPDATE poke_post_thread_posts SET content_hash=$3,checked_at=$4 WHERE guild_id=$1 AND discord_user_id=$2',[g,u,fingerprint(profile),now()]);return true;}
   if(state?.attempted_at)throw review();
   const nonce=randomUUID().replaceAll('-','').slice(0,25);

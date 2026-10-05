@@ -1,6 +1,6 @@
-# Privacy information for the closed Poké-Post test
+# Privacy information for the closed PokéPost test
 
-This document describes Brio Bots Test and the shared-profile test implementation. It does not replace the existing policy for the production Poké-Post bot, which still uses the legacy profile system.
+This document describes Brio Bots Test and the shared-profile test implementation. It does not replace the existing policy for the production PokéPost bot, which still uses the legacy profile system.
 
 ## Your profile
 
