@@ -7,11 +7,11 @@ const validId=id=>typeof id==='string'&&/^\d{17,20}$/.test(id);
 const threadContentHash=profile=>'thread-v2:'+fingerprint(profile);
 // Read-only planning boundary. A future executor must lock and re-read before
 // Discord I/O; this snapshot is deliberately not an authorization to send.
-function createGuildThreadPlanner({pool,guildIds}){
- if(!Array.isArray(guildIds)||!guildIds.length||guildIds.some(id=>!validId(id))||new Set(guildIds).size!==guildIds.length)throw Error('Choose explicit, unique thread-planning servers');
- const allowed=new Set(guildIds);
+function createGuildThreadPlanner({pool,guildIds=null}){
+ if(guildIds!==null&&(!Array.isArray(guildIds)||!guildIds.length||guildIds.some(id=>!validId(id))||new Set(guildIds).size!==guildIds.length))throw Error('Choose explicit, unique thread-planning servers');
+ const allowed=guildIds===null?null:new Set(guildIds);
  async function plan(guildId){
-  if(!allowed.has(guildId))throw Error('Server is outside the thread-planning scope');
+  if(!validId(guildId)||allowed&&!allowed.has(guildId))throw Error('Server is outside the thread-planning scope');
   const db=await pool.connect();
   try{
    await db.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');

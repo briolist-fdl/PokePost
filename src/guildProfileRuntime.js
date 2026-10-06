@@ -14,9 +14,9 @@ const {createGuildOwnerStore}=require('./guildOwnerStore');
 const {createGuildPublisher}=require('./guildPublisher');
 // Explicit factory for the future migrated runtime. No connection, timer or login
 // is created here. The caller provides the Discord client and profile renderer.
-function createGuildProfileRuntime({pool,client,render,logger=console,guildIds=[]}) {
- const threads=guildIds.length?createGuildThreadDelivery({pool,client,render,guildIds,logger}):null;
- const copyTransition=guildIds.length?createCopyTransition({pool,client,mode:'shared',guildIds}):async()=>false;
+function createGuildProfileRuntime({pool,client,render,logger=console,guildIds=null}) {
+ const threads=createGuildThreadDelivery({pool,client,render,guildIds,logger});
+ const copyTransition=createCopyTransition({pool,client,mode:'shared',guildIds});
  const publisher=createGuildPublisher({pool,client,render,logger});
  const scheduler=createGuildBumpScheduler({pool,bump:publisher.bump,logger});
  const guilds=createGuildSettingsStore(pool),formStore=createProfileFormStore(pool),activationStore=createActivationStore(pool);

@@ -1,14 +1,14 @@
 const {MessageFlags}=require('discord.js');
 const id=v=>typeof v==='string'&&/^\d{17,20}$/.test(v);
 // Internal bridge. Call only after validating the bot identity and server scope.
-function createCopyTransition({pool,client,mode,guildIds}){
- if(!['shared','legacy'].includes(mode)||!Array.isArray(guildIds)||!guildIds.length||guildIds.some(g=>!id(g)))throw Error('Invalid copy transition scope');
- const allowed=new Set(guildIds);
+function createCopyTransition({pool,client,mode,guildIds=null}){
+ if(!['shared','legacy'].includes(mode)||(guildIds!==null&&(!Array.isArray(guildIds)||!guildIds.length||guildIds.some(g=>!id(g)))))throw Error('Invalid copy transition scope');
+ const allowed=guildIds===null?null:new Set(guildIds);
  return async function handle(i){
   const prefix=mode==='shared'?'copy_friend_code:':'guild_copy:';if(!i.customId?.startsWith(prefix))return false;
   const deny=async()=>{await i.reply({content:'That profile is no longer available in this server.',flags:MessageFlags.Ephemeral,allowedMentions:{parse:[]}});return true;};
   const match=mode==='shared'?/^copy_friend_code:(\d{17,20})(?::([0-3]))?$/.exec(i.customId):/^guild_copy:(\d{17,20}):(\d{17,20}):([0-3])$/.exec(i.customId);
-  if(!match||!allowed.has(i.guildId)||i.message?.author?.id!==client.user.id||!id(i.message?.id)||!id(i.channelId))return deny();
+  if(!match||!id(i.guildId)||allowed&&!allowed.has(i.guildId)||i.message?.author?.id!==client.user.id||!id(i.message?.id)||!id(i.channelId))return deny();
   if(mode==='legacy'&&match[1]!==i.guildId)return deny();
   const user=mode==='shared'?match[1]:match[2],index=Number((mode==='shared'?match[2]:match[3])||0);
   const query=mode==='shared'?`SELECT p.trainer_code_raw,p.additional_codes FROM poke_post_profiles p

@@ -4,11 +4,11 @@ const {createGuildThreadPlanner}=require('./guildThreadPlan');
 const {fingerprint}=require('./threadRouter');
 const {scopedCopyButtons}=require('./guildProfileCommands');
 const threadContentHash=profile=>'thread-v2:'+fingerprint(profile);
-function createGuildThreadDelivery({pool,client,render,guildIds,logger=console,now=()=>new Date()}){
- const planner=createGuildThreadPlanner({pool,guildIds}),allowed=new Set(guildIds),blocked=new Map();let running=false;
+function createGuildThreadDelivery({pool,client,render,guildIds=null,logger=console,now=()=>new Date()}){
+ const planner=createGuildThreadPlanner({pool,guildIds}),allowed=guildIds===null?null:new Set(guildIds),blocked=new Map();let running=false;
  const review=()=>Object.assign(Error('Unconfirmed thread delivery requires operator review'),{code:'THREAD_DELIVERY_REVIEW'});
  async function locked(g,u,work){
-  if(!allowed.has(g)||!/^\d{17,20}$/.test(u))throw Error('Invalid thread delivery scope');
+  if(!/^\d{17,20}$/.test(g)||allowed&&!allowed.has(g)||!/^\d{17,20}$/.test(u))throw Error('Invalid thread delivery scope');
   const db=await pool.connect(),held=[];let broken=false;
   try{
    // Same ordering as shared edits/erasure, followed by guild setup and publisher.
@@ -61,7 +61,8 @@ function createGuildThreadDelivery({pool,client,render,guildIds,logger=console,n
  });}
  async function tick(){if(running)return false;running=true;let db,held=false;
   try{db=await pool.connect();held=(await db.query('SELECT pg_try_advisory_lock(7260530) AS locked')).rows[0].locked;if(!held)return false;
-   const jobs=[];for(const g of guildIds){if(!(await db.query('SELECT 1 FROM poke_post_guilds WHERE guild_id=$1',[g])).rows.length)continue;jobs.push(...(await planner.plan(g)).actions);}
+   const guilds=guildIds||(await db.query('SELECT guild_id FROM poke_post_guilds ORDER BY guild_id')).rows.map(row=>row.guild_id);
+   const jobs=[];for(const g of guilds){if(!(await db.query('SELECT 1 FROM poke_post_guilds WHERE guild_id=$1',[g])).rows.length)continue;jobs.push(...(await planner.plan(g)).actions);}
    jobs.sort((a,b)=>+new Date(a.state?.checked_at||0)-+new Date(b.state?.checked_at||0)||a.guildId.localeCompare(b.guildId)||a.userId.localeCompare(b.userId));
    const job=jobs.find(j=>(blocked.get(j.guildId+':'+j.userId)||0)<=+now());if(!job)return false;
    const key=job.guildId+':'+job.userId;
