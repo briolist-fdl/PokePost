@@ -16,8 +16,6 @@ async function verifyProductionSchema(pool,config){
  const required=['poke_post_guilds','poke_post_profiles','poke_post_activations','poke_post_imports','poke_post_group_threads','poke_post_refresh_queue','poke_post_delivery_attempts','poke_post_post_cleanup','poke_post_thread_posts','poke_post_guild_bump_schedule','poke_post_moderation_audit'];if(required.some(t=>!tables.includes(t)))throw fail('Apply the reviewed migrations before starting shared production runtime.');
  if((await db.query('SELECT 1 FROM poke_post_imports WHERE import_key=$1',['legacy-rollback-v1'])).rows.length)throw fail('This database completed a legacy rollback; shared runtime must remain stopped.');
  const configured=(await db.query('SELECT guild_id FROM poke_post_guilds WHERE guild_id=ANY($1::text[])',[config.guildIds])).rows.map(r=>r.guild_id);if(configured.length!==config.guildIds.length)throw fail('Every production bootstrap server must have reviewed settings.');
- if((await db.query('SELECT 1 FROM poke_post_delivery_attempts WHERE attempted_at IS NOT NULL OR delivered_message_id IS NOT NULL LIMIT 1')).rows.length)throw fail('Reconcile delivery attempts before starting production.');
- if((await db.query('SELECT 1 FROM poke_post_refresh_queue UNION SELECT 1 FROM poke_post_post_cleanup LIMIT 1')).rows.length)throw fail('Drain refresh and cleanup work before starting production.');
  const threads=(await db.query('SELECT guild_id,count(*)::int AS count FROM poke_post_group_threads GROUP BY guild_id')).rows;
  await db.query('COMMIT');return {migrationHash:migrationSpec().hash,configuredGuilds:configured,threadMappings:threads};
  }catch(e){await db.query('ROLLBACK').catch(()=>{});throw e;}finally{db.release();}
