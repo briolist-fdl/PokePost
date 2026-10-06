@@ -22,6 +22,7 @@ const vivillonChoices = [
   "sun",
   "tundra"
 ];
+const groupChoices = ["blizzard", "bloom", "crossroads", "horizons", "waves", "wetlands"];
 
 const setupCommand = new SlashCommandBuilder()
   .setName("post")
@@ -120,6 +121,14 @@ setupCommand.addSubcommandGroup(group => group
   .addSubcommand(sub => sub
     .setName('server')
     .setDescription('Choose this server’s friend code feeds and local region.'))
+  .addSubcommand(sub => sub
+    .setName('thread')
+    .setDescription('Choose or disconnect an existing Vivillon group thread.')
+    .addStringOption(opt => opt
+      .setName('group')
+      .setDescription('The Vivillon group to configure.')
+      .setRequired(true)
+      .addChoices(...groupChoices.map(value => ({ name: prettifyPattern(value), value })))))
   .addSubcommand(sub => sub
     .setName('remove')
     .setDescription('Remove a public post and stop automatic bumping while keeping the saved profile.')
