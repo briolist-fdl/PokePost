@@ -66,7 +66,8 @@ The maintainer is not responsible for misuse of the bot, incorrect configuration
 
 ## Support development
 
-PokéPost is built as an open source community tool.
+PokéPost's source code is publicly viewable. No software licence has been
+selected yet.
 
 If PokéPost helps your server, you can support further development by contributing feedback or issues on GitHub, or by supporting the developer here:
 
@@ -80,4 +81,4 @@ These terms may be updated when PokéPost changes functionality, hosting, or dat
 
 For questions, issues, or data requests, use the GitHub repository:
 
-https://github.com/briolist-fdl/poke-post
+https://github.com/briolist-fdl/PokePost

@@ -40,6 +40,10 @@ function createProfileErasureStore(pool){
    // The refresh queue cascades from activations. Cleanup references deliberately survive.
    await db.query('DELETE FROM poke_post_activations WHERE discord_user_id=$1',[actor]);
    await db.query('DELETE FROM poke_post_profiles WHERE discord_user_id=$1',[actor]);
+   // An imported profile may still have a copy in the pre-migration table.
+   // Remove it in the same transaction so erasure cannot leave that copy behind.
+   const legacy=(await db.query("SELECT to_regclass('public.friendcode_profiles') AS table_name")).rows[0]?.table_name;
+   if(legacy)await db.query('DELETE FROM friendcode_profiles WHERE discord_user_id=$1',[actor]);
    await db.query('COMMIT');return true;
   }catch(error){await db.query('ROLLBACK').catch(()=>{});throw error;}finally{db.release();}
  }

@@ -50,7 +50,7 @@ const setupCommand = new SlashCommandBuilder()
   .addSubcommand(sub =>
     sub
       .setName("delete")
-      .setDescription("Delete your saved profile and public post.")
+      .setDescription("Remove your profile posts from this server.")
   )
   .addSubcommand(sub =>
     sub
