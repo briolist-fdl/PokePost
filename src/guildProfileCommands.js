@@ -1,5 +1,6 @@
 const {randomUUID}=require('node:crypto');
 const {ActionRowBuilder,ButtonBuilder,ButtonStyle,MessageFlags,escapeMarkdown}=require('discord.js');
+const POKETRADE_INTEREST_URL='https://discord.gg/FzXq7fjRhR';
 const formatCode=code=>code.replace(/(\d{4})(\d{4})(\d{4})/,'$1 $2 $3');
 function scopedCopyButtons(profile) {
  if(!/^\d{17,20}$/.test(profile.guild_id)||!/^\d{17,20}$/.test(profile.discord_user_id))throw Error('Missing profile scope');
@@ -59,13 +60,18 @@ function createGuildProfileCommands({form,formStore,activationStore,getSettings,
   if(i.commandName!=='post'||i.options.getSubcommandGroup(false))return false;
   const sub=i.options.getSubcommand();
   if(sub==='about'){
-   await reply(i,[
+   const content=[
     '**PokéPost**\nKeeps Pokémon GO friend code channels useful instead of noisy. Set up your profile with `/post setup`. Server admins choose the feeds and may sort regions into Vivillon threads.',
     '',
     '**Early access**\nEverything available in the pilot is free. We have not set any pricing. If paid features ever arrive, servers will get notice before anything changes.',
     '',
-    '**In the works**\nPokéTrade posts, guided thread setup, alternative region emoji sets, and more ways to organise your Pokémon GO server.'
-   ].join('\n'));return true;
+    '**In the works**\nPokéTrade posts, guided thread setup, alternative region emoji sets, and more ways to organise your Pokémon GO server.',
+    '',
+    'Interested in PokéTrade? Join the PokéPost channel in Brio Bots. The invite gives you the PokéTrade Interest role.'
+   ].join('\n');
+   const row=new ActionRowBuilder().addComponents(new ButtonBuilder().setStyle(ButtonStyle.Link)
+    .setLabel('Join PokéTrade updates').setURL(POKETRADE_INTEREST_URL));
+   await i.reply({content,components:[row],flags:MessageFlags.Ephemeral,allowedMentions:{parse:[]}});return true;
   }
   if(['delete','repost','republishing','region','add-code','remove-code'].includes(sub)){await action(i,sub);return true;}if(!['setup','edit','view'].includes(sub))return false;
   if(sub!=='view'){await form.open(i,sub);return true;}

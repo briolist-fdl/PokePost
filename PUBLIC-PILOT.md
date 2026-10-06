@@ -16,3 +16,10 @@ anything changes.
 PokéTrade posts, guided thread setup, alternative region emoji sets and more
 ways to organise your Pokémon GO server are in the works. These are roadmap
 items, not commands that are available yet.
+
+## PokéTrade interest
+
+Interested in PokéTrade? Join the PokéPost channel in Brio Bots. The invite
+gives you the PokéTrade Interest role.
+
+https://discord.gg/FzXq7fjRhR
