@@ -28,6 +28,11 @@ const setupCommand = new SlashCommandBuilder()
   .setDescription("Register, update, or manage your Pokemon GO friend code profile.")
   .addSubcommand(sub =>
     sub
+      .setName("erase")
+      .setDescription("Permanently delete your saved profile and remove its posts from all servers.")
+  )
+  .addSubcommand(sub =>
+    sub
       .setName("setup")
       .setDescription("Create your friend code profile in a form.")
   )
@@ -112,6 +117,9 @@ function prettifyPattern(value) {
 setupCommand.addSubcommandGroup(group => group
   .setName('admin')
   .setDescription('Moderate saved friend code profiles.')
+  .addSubcommand(sub => sub
+    .setName('server')
+    .setDescription('Choose this server’s friend code feeds and local region.'))
   .addSubcommand(sub => sub
     .setName('remove')
     .setDescription('Remove a public post and stop automatic bumping while keeping the saved profile.')
