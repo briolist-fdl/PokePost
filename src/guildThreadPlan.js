@@ -1,6 +1,10 @@
 const {groupFor}=require('./vivillonGroups');
 const {fingerprint,validateConfig}=require('./threadRouter');
 const validId=id=>typeof id==='string'&&/^\d{17,20}$/.test(id);
+// Existing imported thread rows stored the profile fingerprint only. Prefixing
+// the renderer version makes each of those rows receive one safe conversion to
+// the shared thread layout, without repeatedly rewriting it thereafter.
+const threadContentHash=profile=>'thread-v2:'+fingerprint(profile);
 // Read-only planning boundary. A future executor must lock and re-read before
 // Discord I/O; this snapshot is deliberately not an authorization to send.
 function createGuildThreadPlanner({pool,guildIds}){
@@ -39,7 +43,7 @@ function createGuildThreadPlanner({pool,guildIds}){
     else if(!state)kind='create';
     else if(state.thread_id!==target)kind='move';
     else if(!state.message_id)kind='create';
-    else if(state.content_hash!==fingerprint(profile))kind='update';
+    else if(state.content_hash!==threadContentHash(profile))kind='update';
     if(kind)actions.push({guildId,userId,kind,targetThreadId:target,profile:target?profile:null,state});
    }
    await db.query('COMMIT');return {guildId,threads,actions,deferred};

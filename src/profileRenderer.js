@@ -4,7 +4,14 @@ const title=s=>s.split('_').map(w=>w[0].toUpperCase()+w.slice(1)).join(' ');
 const safe=s=>escapeMarkdown(String(s||'').replace(/\r?\n/g,' ').replace(/@/g,'@\u200b').replaceAll('🔇 republishing off','republishing off'));
 const code=s=>s.replace(/(\d{4})(\d{4})(\d{4})/,'$1 $2 $3');
 function createProfileRenderer(client){
- const fallback={discord:'Discord',pokeball:'Pokémon GO',campfire:'Campfire'};
+ // These are the established Tundraheim emoji IDs used by the tested bot.
+ // Application-emojis are fetched when available, but the profile layout must
+ // stay intact while that API is unavailable or does not expose guild emojis.
+ const fallback={
+  discord:'<:discord:1491037322701963375>',
+  pokeball:'<:pokeball:426098818560557068>',
+  campfire:'<:campfire:1491036898389659678>'
+ };
  let icons=fallback,expires=0,loading;
  async function appIcons(){
   if(Date.now()<expires)return icons;
