@@ -73,6 +73,14 @@ Labels and String Select components; no dependency update is required.
 
 These commands let users inspect, update, delete, or repost their saved profile.
 
+### About and public-pilot roadmap
+
+`/post about` gives a private overview of the current product, the no-cost
+early-access pilot and the roadmap. The planned PokéTrade module, guided thread
+setup and custom region-emoji themes are not registered as unavailable commands.
+See [PUBLIC-PILOT.md](PUBLIC-PILOT.md) for the invite description and the exact
+early-access wording.
+
 ### Additional friend codes
 
 ```text id="57x4i4"

@@ -44,6 +44,11 @@ const setupCommand = new SlashCommandBuilder()
   )
   .addSubcommand(sub =>
     sub
+      .setName("about")
+      .setDescription("Learn what PokéPost offers and what is planned.")
+  )
+  .addSubcommand(sub =>
+    sub
       .setName("delete")
       .setDescription("Delete your saved profile and public post.")
   )

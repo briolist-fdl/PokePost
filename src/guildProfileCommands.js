@@ -57,7 +57,17 @@ function createGuildProfileCommands({form,formStore,activationStore,getSettings,
  const reply=(i,content)=>i.reply({content,flags:MessageFlags.Ephemeral,allowedMentions:{parse:[]}});
  async function command(i) {
   if(i.commandName!=='post'||i.options.getSubcommandGroup(false))return false;
-  const sub=i.options.getSubcommand();if(['delete','repost','republishing','region','add-code','remove-code'].includes(sub)){await action(i,sub);return true;}if(!['setup','edit','view'].includes(sub))return false;
+  const sub=i.options.getSubcommand();
+  if(sub==='about'){
+   await reply(i,[
+    '**PokéPost**\nKeeps Pokémon GO friend code channels useful instead of noisy. Set up your profile with `/post setup`. Server admins choose the feeds and may sort regions into Vivillon threads.',
+    '',
+    '**Early access**\nEverything available in the pilot is free. We have not set any pricing. If paid features ever arrive, servers will get notice before anything changes.',
+    '',
+    '**In the works**\nPokéTrade posts, guided thread setup, alternative region emoji sets, and more ways to organise your Pokémon GO server.'
+   ].join('\n'));return true;
+  }
+  if(['delete','repost','republishing','region','add-code','remove-code'].includes(sub)){await action(i,sub);return true;}if(!['setup','edit','view'].includes(sub))return false;
   if(sub!=='view'){await form.open(i,sub);return true;}
   if(!i.guildId||!await getSettings(i.guildId)){await reply(i,'Open this command in a server where PokéPost is configured.');return true;}
   const snap=await formStore.snapshot(i.user.id,i.guildId),p=snap.profile;
