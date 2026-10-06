@@ -1,0 +1,44 @@
+{
+  "baseline": "43b7b341ffbd1b40ddb53c7f0ebf119df4270b99",
+  "createdAt": "2026-10-02T07:22:10.250Z",
+  "normalization": "CRLF to LF",
+  "files": [
+    {
+      "path": "index.js",
+      "sha256": "89dfd8536bd479e39f0a65ec0a690a91d98f4083c85b1f4d31001f53c4d9e544"
+    },
+    {
+      "path": "src/copyTransition.js",
+      "sha256": "72af7e68eb364fc4e8941d8cefd6cb7677e0c828112f4bc5e3423e0f62c5bb42"
+    },
+    {
+      "path": "src/legacyRollback.js",
+      "sha256": "22b9d6b3ae27ed559c33d27a8eda88e0fdbd0a65c4278886b1742e6bb0b13d2c"
+    },
+    {
+      "path": "src/legacyRollbackStartup.js",
+      "sha256": "4b3499ed3c3221b576d03c74e1ef7fe38c50357b7cf10d2be2b3ee567ec7c9be"
+    },
+    {
+      "path": "src/guildProfileRuntime.js",
+      "sha256": "3d71cd843ee799f2f69881d1a0e3efe8bcc08193ab560568750ad3f97f494bbd"
+    },
+    {
+      "path": "src/importSharedProfiles.js",
+      "sha256": "f9de3c533a7125e944753a0b7b0a2e82d7a5433dac0effccb3372b978d07b654"
+    },
+    {
+      "path": "src/testEnvironment.js",
+      "sha256": "e51235f046216bad043656cbc52e3b6c01aaf359dc8ffd01a5dd62bf39221a05"
+    },
+    {
+      "path": "COPY-TRANSITION-ROLLBACK-20261002.md",
+      "sha256": "292b753fd4618a936ed48b4cd5cd0a0b3d74d7d6a0061cd7826d65773d85fe08"
+    }
+  ],
+  "validation": {
+    "tests": 50,
+    "postgresScenarios": 7,
+    "liveDeployment": false
+  }
+}

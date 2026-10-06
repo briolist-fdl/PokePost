@@ -1,339 +1,75 @@
-# Poké-Post
+# PokéPost
 
-Poké-Post is a Discord bot for clean Pokémon GO friend code posting.
+PokéPost keeps Pokémon GO friend code channels useful instead of noisy. Players
+save one profile and choose which servers to post it in. Server moderators choose
+the feeds. They can also sort Vivillon regions into existing threads.
 
-It lets players create and manage a structured friend code profile, then posts the profile in dedicated Discord channels without turning the channel into a chat feed.
+PokéPost is in a free public pilot. We have not set any pricing. If paid
+features arrive later, servers will get notice before anything changes.
 
-## Features
+## Add PokéPost to a server
 
-* Create a Pokémon GO friend code profile
-* Store Pokémon GO username, trainer code, Vivillon pattern, and optional Campfire username
-* Add up to three additional friend codes
-* Edit, view, repost, or delete your saved profile
-* Change Vivillon region
-* Turn follower republishing on or off
-* Post to dedicated Tundra and international friend code channels
-* Optional automatic bumping/reposting system. Public posts show a single linked Discord username instead of a user mention, without a mention ping. Automatic bumps suppress push notifications; unread indicators may still appear. Other posts follow normal channel notification settings.
-* PostgreSQL-backed profile storage
-* Ephemeral command responses for user actions
+[Install PokéPost](https://discord.com/oauth2/authorize?client_id=1494609975031369828&scope=bot%20applications.commands&permissions=292058106880&integration_type=0)
 
-## Main command
+The link requests only Guild Install. It asks for permission to view channels,
+read message history, send messages, send in threads, manage threads and use
+external emojis. A moderator needs **Manage Messages** to configure the bot.
 
-Poké-Post uses one main slash command:
+1. Run `/post admin server` and select a main friend code channel and your local
+   Vivillon region. A separate local channel is optional.
+2. If you already have Vivillon group threads, run `/post admin thread` for each
+   group you want to link. Thread sorting is optional. PokéPost does not create
+   the threads for you yet.
+3. Players can run `/post setup` to save a profile and activate it in the server.
 
-```text id="bcwuxr"
-/post
-```
+The bot needs access to the channels and threads you choose. It may take a little
+while for a new global slash command to appear in Discord.
 
-### Profile setup
+## Player commands
 
-```text id="aljqq7"
-/post setup
-```
+`/post setup` opens the profile form. It asks for your Pokémon GO name, friend
+code, Vivillon region and whether you allow republishing to follower servers.
+Campfire name and additional codes are optional.
 
-Opens a profile form; no slash-command arguments are required. `/post edit` opens
-the same form with saved values. Running setup when a profile already exists opens
-that profile for editing and preserves its additional codes.
+`/post view`, `/post edit`, `/post region`, `/post add-code` and
+`/post remove-code` manage your saved profile. Shared profile edits update every
+server where you have activated it. `/post repost` replaces your post in the
+current server. `/post republishing` changes that server's republishing choice.
 
-Required fields:
+`/post delete` removes your posts from the current server. Your saved profile
+and posts in other servers remain. `/post erase` asks for confirmation before
+deleting your saved profile across servers. Post cleanup can take time, and
+copies already published to follower servers may remain.
 
-```text id="yck75s"
-pokemon_username
-trainer_code
-vivillon_pattern
-publish_to_followers
-```
+`/post about` shows a short overview of the pilot and what is planned.
 
-Optional field:
+## PokéTrade
 
-```text id="8p9j0d"
-campfire_username
-```
+Trade posts are planned, but there are no trade commands yet. If you are mainly
+interested in that feature, [join the PokéPost channel in Brio Bots](https://discord.gg/FzXq7fjRhR).
+This invite gives you the **PokéTrade Interest** role.
 
-Vivillon region and republishing consent use dropdowns in the form. New profiles
-require an explicit yes/no republishing choice. Submission returns a private
-confirmation and preview. Changing region publishes in the new channel before
-removing the old post. If publishing fails, the saved profile is retained and the
-private reply explains how to retry.
+Guided thread setup and alternative region emoji sets are also on the roadmap.
+They are not part of the pilot today.
 
-This UI change still uses the current home-server profile storage. The separate
-multi-server model and optional-profile-info button are not activated by this
-release. It needs command re-registration as well as deployment. Forms opened
-before the update must be reopened. The locked discord.js version supports modal
-Labels and String Select components; no dependency update is required.
+## Privacy and support
 
-### Profile management
+Read the [Privacy Policy](PRIVACY.md) and [Terms of Service](TERMS.md). To report
+an issue or request help, use [GitHub Issues](https://github.com/briolist-fdl/PokePost/issues).
+Do not post a bot token, database address or other credential in a public issue.
 
-```text id="uoevyq"
-/post view
-/post edit
-/post delete
-/post repost
-```
+The [public pilot copy](PUBLIC-PILOT.md) records the current invitation and
+roadmap wording. Source code is available in this repository. No software
+licence has been selected yet.
 
-These commands let users inspect, update, delete, or repost their saved profile.
+## Development
 
-### Additional friend codes
+The public Railway service starts `production-bot.js`. The package's `npm start`
+command still starts the older single server runtime in `index.js`. Do not use
+that command as a production setup guide for the public pilot.
 
-```text id="57x4i4"
-/post add-code
-/post remove-code
-```
-
-Users can add or remove extra trainer codes from their profile.
-
-### Republishing
-
-```text id="bpi79z"
-/post republishing
-```
-
-Turns follower republishing on or off.
-
-### Vivillon region
-
-```text id="hzluu8"
-/post region
-```
-
-Changes the saved Vivillon pattern for the user profile.
-
-## Moderator region correction
-
-`/post admin region user:<member> vivillon_pattern:<region>` corrects a saved profile.
-It requires **Manage Messages** at runtime. The
-runtime check uses the member's effective permissions in the command channel,
-including channel overrides. Administrator also grants access. Until
-profiles are server-scoped, it only operates in `DISCORD_GUILD_ID` (the home server).
-The profile owner does not need to be the person running the command.
-
-The `/post` root remains available to regular users. Discord command-level default
-permissions apply to the whole root, so admin subcommands rely on the runtime
-permission check rather than restricting all profile commands. The admin group
-may be visible to users who cannot run it.
-
-The post is edited in place when its destination stays the same. Otherwise a new
-post is saved in the correct configured channel before the old post is removed.
-Missing old posts are recreated. Codes, republishing preference and bump timestamps
-are retained; the correction removes the automatic `bumped` marker. No profile is deleted.
-
-The bot needs View Channel and Read Message History in the source, and View Channel
-and Send Messages in the destination. It only edits/deletes its own stored post.
-No mentions are notified by this command. Posts in followed servers may not be
-updated or removed when an announcement post is corrected.
-
-Moderation events are JSON records with `event=poke_post_moderation` in the hosting
-logs (Railway). They include moderator/user/server IDs, old/new region and message
-references, timestamp and outcome, but no trainer codes. Access to these logs should
-be restricted to staff; retention follows the hosting log settings. No separate
-Discord audit channel is created by this version.
-
-If old-post cleanup fails, the private reply links to the remaining post. If a
-database commit cannot be confirmed, the command asks staff to check before retrying.
-Discord and PostgreSQL do not share a transaction, so these partial failures require
-manual review. Avoid concurrent profile edits while a moderator correction is running.
-
-This feature needs a code deploy **and explicit slash-command registration** before
-use. It needs no schema migration or new environment variables.
-
-## Requirements
-
-* Node.js
-* PostgreSQL database
-* Discord bot application
-* Discord server where slash commands can be registered
-* Dedicated Discord channels for configured friend code feeds
-
-## Environment variables
-
-Poké-Post is configured through environment variables.
-
-```env id="bdnyav"
-DISCORD_TOKEN=
-DISCORD_CLIENT_ID=
-DISCORD_GUILD_ID=
-DEPLOY_GLOBAL_COMMANDS=
-DATABASE_URL=
-
-INTERNATIONAL_CHANNEL_ID=
-TUNDRA_CHANNEL_ID=
-
-BOT_ID=poke-post
-SUPPORT_MESSAGES_ENABLED=true
-```
-
-`DEPLOY_GLOBAL_COMMANDS=true` is only needed when deploying slash commands globally for public bot usage.
-
-Optional bump/repost settings:
-
-```env id="rblbcm"
-BUMP_ENABLED=false
-
-BUMP_TUNDRA_INTERVAL_HOURS=24
-BUMP_TUNDRA_COUNT_PER_RUN=1
-BUMP_TUNDRA_COOLDOWN_DAYS=5
-
-BUMP_INTERNATIONAL_INTERVAL_HOURS=11
-BUMP_INTERNATIONAL_COUNT_PER_RUN=3
-BUMP_INTERNATIONAL_COOLDOWN_DAYS=3
-```
-
-Optional support-message override:
-
-```env id="2zf7xa"
-SUPPORT_MESSAGE_CHANCE=
-```
-
-`SUPPORT_MESSAGE_CHANCE` is intended for testing or temporary override only. Do not set it permanently unless you specifically want to override the bot default.
-
-## Installation
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Deploy slash commands to the configured development/test guild:
-
-```bash
-npm run deploy-commands
-```
-
-Deploy slash commands globally for public bot usage:
-
-```bash
-DEPLOY_GLOBAL_COMMANDS=true npm run deploy-commands
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:DEPLOY_GLOBAL_COMMANDS="true"
-npm run deploy-commands
-Remove-Item Env:\DEPLOY_GLOBAL_COMMANDS
-```
-
-Guild deploy is useful for testing because commands update quickly. Global deploy is needed when the bot is installed in other servers.
-
-Start the bot:
-
-```bash
-npm start
-```
-
-## Database
-
-Poké-Post uses PostgreSQL.
-
-The database connection is read from:
-
-```env id="yqlp1b"
-DATABASE_URL=
-```
-
-The bot stores user profile data needed to create and manage friend code posts.
-
-## Permissions
-
-Poké-Post needs the Discord permissions required to:
-
-* use slash commands
-* send messages in configured friend code channels
-* edit or delete bot-created profile posts when users update/delete their profile
-* send ephemeral command responses
-
-## Privacy and data
-
-Poké-Post stores the profile information users submit through `/post setup` and related commands.
-
-This may include:
-
-* Discord user ID
-* Pokémon GO username
-* Pokémon GO trainer code
-* Vivillon pattern
-* optional Campfire username
-* additional trainer codes
-* republishing preference
-* message references needed to manage public posts
-
-Poké-Post is not designed as a general-purpose message archive.
-
-## Support development
-
-Poké-Post is built as an open source community tool.
-
-If it helps your server, you can support further development by voting for the bot when voting pages are available, contributing feedback or issues on GitHub, or supporting the developer here:
-
-https://buymeacoffee.com/andreasviken
-
-## Links
-
-* GitHub: https://github.com/briolist-fdl/poke-post
-* Support development: https://buymeacoffee.com/andreasviken
-
-## License
-
-No license has been specified yet.
-
-### Remove a public profile post
-
-`/post admin remove user:<@mention or user ID>` requires Manage Messages in the
-command channel and is restricted to the configured home server. The command
-accepts a raw user ID so a post can be removed even if Discord cannot display its
-owner. It removes only the bot's stored public post and clears its message reference;
-the saved profile, codes and republishing preference remain. Automatic bumping skips
-removed posts, including bumps already selected before removal. A row lock serializes
-bumping with moderator removal/region correction.
-
-The private response confirms the result and the moderation log records IDs and
-outcome, without friend codes. This is not a posting ban: an owner can publish again
-through the existing profile commands, and a moderator's region correction can also
-recreate the post. Followed/crossposted copies are not independently deleted by this
-command. If the Discord deletion succeeds but database confirmation fails, the reply
-requests a retry to finish disabling bumping. A missing post is safe to remove again.
-
-Automatic bump sends use an enforced nonce derived from the replaced message ID to prevent duplicate creation on short Discord API retries. Discord deduplicates these nonces for a few minutes; this is not a permanent exactly-once guarantee and does not remove pre-existing duplicate posts.
-
-## Vivillon groups and emoji decisions
-
-See [VIVILLON-STRUCTURE.md](VIVILLON-STRUCTURE.md) for the current Tundraheim group mapping, post emojis and agreed future routing direction. It supersedes earlier candidate lists.
-
-## Automatic bump cadence
-
-With BUMP_ENABLED=true, International runs hourly and Tundra every 3 hours during
-one transition sweep for the September 2026 Vivillon emoji update. Each channel
-then automatically switches to its normal cadence: International every 4 hours,
-Tundra every 8 hours. Exactly one eligible profile is selected per run. International
-uses whole-hour UTC slots; Tundra uses UTC slots offset by 30 minutes. A shared
-30-minute minimum gap also separates delayed sends across the two feeds.
-
-The scheduler creates poke_post_bump_runs and poke_post_bump_queue tables on first
-startup. These retain the original active-post queue and completion across restarts.
-Transition selects oldest last_bumped_at first (never-bumped first); normal operation
-selects randomly. Replacement posts and removals are dropped from the queue. New
-profiles are already rendered with current emojis and are not added to the sweep.
-Existing BUMP_TUNDRA_COOLDOWN_DAYS (default 5) and
-BUMP_INTERNATIONAL_COOLDOWN_DAYS (default 3) remain in force, so the sweep can wait
-for recent profiles to become eligible. Failed sends remain pending.
-
-BUMP_*_INTERVAL_HOURS and BUMP_*_COUNT_PER_RUN are superseded by this schedule;
-changing those old variables has no effect. No environment changes are required.
-Startup schedules the next future slot without an immediate or catch-up bump.
-A database advisory lock serializes scheduler instances, and existing per-profile
-locking and short-retry nonce protection still apply. Auto-bumps suppress mentions
-and push notifications. Historical duplicate messages are not cleaned up by this job.
-
-## Removing an older profile copy
-
-The optional message field in `/post admin remove` accepts a full Discord message
-link or a message ID. Use a full link when the copy is in another channel or the
-saved profile no longer exists. A bare ID uses the saved profile channel, or the
-command channel when no profile exists.
-
-The bot verifies that the selected message was posted by Poké-Post and that its
-copy button identifies the requested profile owner. The owner does not need to
-be a server member. Removing a selected older copy leaves a different active post
-unchanged. Removing the active post also disables its automatic bumping. This
-option does not scan for other copies or block future posting.
+The shared runtime requires PostgreSQL migrations and reviewed environment
+settings. See [production runtime notes](PRODUCTION-SHARED-RUNTIME-20261002.md),
+[shared profile notes](SHARED-PROFILES.md) and [delivery recovery notes](DELIVERY-RECOVERY.md)
+before working on it. Some dated technical notes describe earlier milestones
+and do not reflect the current deployment.

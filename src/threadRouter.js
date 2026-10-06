@@ -97,7 +97,7 @@ function createThreadRouter({ pool, client, configs, loadProfiles, render, logge
     const body = await render(profile);
     const payload = { ...body, allowedMentions: { parse: [] } };
     const message = await existingMessage(thread, state.message_id);
-    if (thread.archived) await thread.setArchived(false, 'Update configured Poké-Post group feed');
+    if (thread.archived) await thread.setArchived(false, 'Update configured PokéPost group feed');
     let messageId;
     if (message) {
       await message.edit(payload);

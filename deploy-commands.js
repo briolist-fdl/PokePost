@@ -22,10 +22,16 @@ const vivillonChoices = [
   "sun",
   "tundra"
 ];
+const groupChoices = ["blizzard", "bloom", "crossroads", "horizons", "waves", "wetlands"];
 
 const setupCommand = new SlashCommandBuilder()
   .setName("post")
   .setDescription("Register, update, or manage your Pokemon GO friend code profile.")
+  .addSubcommand(sub =>
+    sub
+      .setName("erase")
+      .setDescription("Permanently delete your saved profile and remove its posts from all servers.")
+  )
   .addSubcommand(sub =>
     sub
       .setName("setup")
@@ -38,8 +44,13 @@ const setupCommand = new SlashCommandBuilder()
   )
   .addSubcommand(sub =>
     sub
+      .setName("about")
+      .setDescription("Learn what PokéPost offers and what is planned.")
+  )
+  .addSubcommand(sub =>
+    sub
       .setName("delete")
-      .setDescription("Delete your saved profile and public post.")
+      .setDescription("Remove your profile posts from this server.")
   )
   .addSubcommand(sub =>
     sub
@@ -113,6 +124,17 @@ setupCommand.addSubcommandGroup(group => group
   .setName('admin')
   .setDescription('Moderate saved friend code profiles.')
   .addSubcommand(sub => sub
+    .setName('server')
+    .setDescription('Choose this server’s friend code feeds and local region.'))
+  .addSubcommand(sub => sub
+    .setName('thread')
+    .setDescription('Choose or disconnect an existing Vivillon group thread.')
+    .addStringOption(opt => opt
+      .setName('group')
+      .setDescription('The Vivillon group to configure.')
+      .setRequired(true)
+      .addChoices(...groupChoices.map(value => ({ name: prettifyPattern(value), value })))))
+  .addSubcommand(sub => sub
     .setName('remove')
     .setDescription('Remove a public post and stop automatic bumping while keeping the saved profile.')
     .addStringOption(opt => opt.setName('user').setDescription('Enter the profile owner’s @mention or user ID, even if they have left the server.').setRequired(true))
@@ -135,7 +157,7 @@ async function deployCommands() {
   const clientId = process.env.DISCORD_CLIENT_ID;
   const guildId = process.env.DISCORD_GUILD_ID;
 
-  console.log("Deploying Poké-Post slash commands...");
+  console.log("Deploying PokéPost slash commands...");
   console.log("Client ID:", clientId);
   console.log("Guild ID:", guildId || "(none)");
   console.log("Deploy global:", deployGlobalCommands);
@@ -156,18 +178,18 @@ async function deployCommands() {
 
   console.log(
     deployGlobalCommands
-      ? "Deploying Poké-Post commands globally."
-      : `Deploying Poké-Post commands to guild ${guildId}.`
+      ? "Deploying PokéPost commands globally."
+      : `Deploying PokéPost commands to guild ${guildId}.`
   );
 
   await rest.put(route, {
     body: commands,
   });
 
-  console.log("Poké-Post slash commands deployed.");
+  console.log("PokéPost slash commands deployed.");
 }
 
 deployCommands().catch((error) => {
-  console.error("Failed to deploy Poké-Post slash commands:", error);
+  console.error("Failed to deploy PokéPost slash commands:", error);
   process.exit(1);
 });
