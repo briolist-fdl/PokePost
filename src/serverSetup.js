@@ -30,11 +30,11 @@ function createServerSetup({store,now=()=>Date.now(),logger=console}) {
     for(const [key,value] of sessions)if(value.actor===i.user.id && value.guild===i.guildId)sessions.delete(key);
     const key=randomUUID();sessions.set(key,{...data,actor:i.user.id,guild:i.guildId,expires:now()+900000});return 'post_server:'+key;
   }
-  function channelInput(id,label,selected,optional) {
+  function channelInput(id,label,description,selected,optional) {
     const select=new ChannelSelectMenuBuilder().setCustomId(id).setChannelTypes(ChannelType.GuildText,ChannelType.GuildAnnouncement)
       .setMinValues(optional?0:1).setMaxValues(1).setRequired(!optional);
     if(selected)select.setDefaultChannels(selected);
-    return new LabelBuilder().setLabel(label).setChannelSelectMenuComponent(select);
+    return new LabelBuilder().setLabel(label).setDescription(description).setChannelSelectMenuComponent(select);
   }
   async function open(i) {
     if(!await guard(i))return;
@@ -47,10 +47,10 @@ function createServerSetup({store,now=()=>Date.now(),logger=console}) {
         {label:'Keep automatic bumps off',value:'disabled',default:settings ? !settings.bumpEnabled : false}
       ]);
     const modal=new ModalBuilder().setCustomId(session(i,{kind:'feeds',expected:feedSnapshot(settings)})).setTitle('Set up your server feeds')
-      .addLabelComponents(channelInput('main_channel','Main friend code feed',settings?.internationalChannelId,false),
-        channelInput('local_channel','Separate local feed, optional',settings?.localChannelId,true),
-        new LabelBuilder().setLabel('Local Vivillon region').setStringSelectMenuComponent(region),
-        new LabelBuilder().setLabel('Automatic bumps').setDescription('Repost eligible profiles on this server according to its schedule.').setStringSelectMenuComponent(bumps));
+      .addLabelComponents(channelInput('main_channel','Main friend code feed','Posts appear here unless they belong in a separate local feed.',settings?.internationalChannelId,false),
+        channelInput('local_channel','Separate local feed, optional','Show posts from your local Vivillon region in this channel.',settings?.localChannelId,true),
+        new LabelBuilder().setLabel('Local Vivillon region').setDescription('Posts from this region use the local feed, if selected.').setStringSelectMenuComponent(region),
+        new LabelBuilder().setLabel('Automatic bumps').setDescription('Periodically repost eligible profiles so active friend codes stay visible.').setStringSelectMenuComponent(bumps));
     await i.showModal(modal);
   }
   async function openThread(i,group) {
