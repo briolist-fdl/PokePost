@@ -8,9 +8,11 @@ make the current single-server bot ready for public installation.
 ## User flow
 
 `/post admin server` opens a form with a required main channel, an optional separate
-local channel and a selected local Vivillon region. Both channels must belong to the
-server and support text or announcement messages. If the local channel is omitted,
-all regions use the main channel. Choosing a region alone does not split the feed.
+local channel, a selected local Vivillon region and an automatic-bumping preference.
+Both channels must belong to the server and support text or announcement messages.
+If the local channel is omitted, all regions use the main channel. Choosing a region
+alone does not split the feed. New server forms default automatic bumping to enabled;
+later edits retain and display the server's current choice.
 
 `/post admin thread` selects one of the six groups and opens a form for its existing
 thread link or ID. Leaving the field empty explicitly disconnects the group. Public
@@ -35,9 +37,9 @@ channel selectors. Discord reference https://docs.discord.com/developers/compone
 `src/serverSetupStore.js` saves feed choices through guildSettings and group targets
 through poke_post_group_threads. The actor must be checked by the controller before
 these internal storage methods are called. Group configuration is scoped by guild
-and group, with a unique destination per guild. Moderation, bump and presentation
-flags remain unchanged when feed settings are saved. New servers start with bumping
-and channel moderation disabled. No user profiles or publishing consent are changed.
+and group, with a unique destination per guild. Moderation and presentation flags
+remain unchanged when feed settings are saved. The bump flag is selected explicitly
+in the form. No user profiles or publishing consent are changed.
 
 Apply schema 001 and 004 before 005-group-threads.sql. These migrations are preparatory
 and none run automatically. The existing runtime table poke_post_thread_posts holds

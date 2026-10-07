@@ -15,8 +15,9 @@ The link requests only Guild Install. It asks for permission to view channels,
 read message history, send messages, send in threads, manage threads and use
 external emojis. A moderator needs **Manage Messages** to configure the bot.
 
-1. Run `/post admin server` and select a main friend code channel and your local
-   Vivillon region. A separate local channel is optional.
+1. Run `/post admin server` and select a main friend code channel, your local
+   Vivillon region, and whether automatic bumps are enabled. A separate local
+   channel is optional.
 2. If you already have Vivillon group threads, run `/post admin thread` for each
    group you want to link. Thread sorting is optional. PokéPost does not create
    the threads for you yet.
