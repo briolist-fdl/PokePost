@@ -32,7 +32,7 @@ function createServerSetupStore(pool) {
       if (feedSnapshot(current) !== expected) throw Error('The server setup changed while this form was open. Reopen it to review the latest choices.');
       await store.save({ guildId:guild.id, internationalChannelId:values.internationalChannelId,
         localChannelId:values.localChannelId || null, localPattern:values.localPattern,
-        moderateChannels:current?.moderateChannels || false,bumpEnabled:values.bumpEnabled },guild);
+        moderateChannels:true,bumpEnabled:values.bumpEnabled },guild);
       await db.query(`INSERT INTO poke_post_refresh_queue(guild_id,discord_user_id)
         SELECT guild_id,discord_user_id FROM poke_post_activations WHERE guild_id=$1 AND active
         ON CONFLICT(guild_id,discord_user_id) DO UPDATE SET generation=poke_post_refresh_queue.generation+1,requested_at=NOW()`,[guild.id]);

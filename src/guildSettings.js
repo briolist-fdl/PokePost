@@ -47,7 +47,7 @@ async function validateChannels(settings, guild) {
     const needed = [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages,
       PermissionFlagsBits.ReadMessageHistory];
     if (settings.moderateChannels) needed.push(PermissionFlagsBits.ManageMessages);
-    if (!channel.permissionsFor(me)?.has(needed)) throw new Error('The bot lacks required feed permissions');
+    if (!channel.permissionsFor(me)?.has(needed)) throw new Error(settings.moderateChannels?'PokéPost needs View Channel, Send Messages, Read Message History and Manage Messages in each feed.':'The bot lacks required feed permissions');
   }
 }
 
