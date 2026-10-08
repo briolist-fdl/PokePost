@@ -57,15 +57,15 @@ function createGuildPublisher({pool,client,render,now=()=>new Date(),logger=cons
    if(typeof content!=='string')throw Error('Renderer must return text');
    if(bumpRequest){const lines=content.split('\n');lines[0]+=' · *bumped*';content=lines.join('\n');}
    if(content.length>2000)throw Error('Rendered profile is too long');
-   const payload=JSON.parse(JSON.stringify({content,components:scopedCopyButtons(p),allowedMentions:{parse:[]},flags:MessageFlags.SuppressNotifications}));
-   if(!bumpRequest&&String(p.repost_requested)===String(p.repost_delivered)&&p.public_channel_id===target&&p.public_message_id){const old=await message(ch,p.public_message_id,g,u);if(old){await old.edit({content:payload.content,components:payload.components,allowedMentions:payload.allowedMentions});return true;}}
+   const payload=JSON.parse(JSON.stringify({content,components:scopedCopyButtons(p),allowedMentions:{parse:[]},flags:MessageFlags.SuppressNotifications|MessageFlags.SuppressEmbeds}));
+   if(!bumpRequest&&String(p.repost_requested)===String(p.repost_delivered)&&p.public_channel_id===target&&p.public_message_id){const old=await message(ch,p.public_message_id,g,u);if(old){await old.edit({content:payload.content,components:payload.components,allowedMentions:payload.allowedMentions,flags:MessageFlags.SuppressEmbeds});return true;}}
    pending=(await db.query(`INSERT INTO poke_post_delivery_attempts(guild_id,discord_user_id,source_channel_id,source_message_id,target_channel_id,nonce,payload,repost_generation,source_revision,source_publishing,source_region,auto_bump)
     VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,[g,u,p.public_channel_id,p.public_message_id,target,randomUUID().replaceAll('-','').slice(0,25),JSON.stringify(payload),p.repost_requested,p.revision,p.publish_to_followers,p.vivillon_pattern,!!bumpRequest])).rows[0];
   }
   // A prior attempt keeps its original destination, body and nonce across retries.
   const destination=pending.target_channel_id===target?ch:await channel(g,pending.target_channel_id,true);
   await db.query('UPDATE poke_post_delivery_attempts SET attempted_at=COALESCE(attempted_at,$3) WHERE guild_id=$1 AND discord_user_id=$2',[g,u,now()]);
-  const sent=await destination.send({...pending.payload,nonce:pending.nonce,enforceNonce:true});
+  const sent=await destination.send({...pending.payload,flags:(pending.payload.flags||0)|MessageFlags.SuppressEmbeds,nonce:pending.nonce,enforceNonce:true});
   await db.query('UPDATE poke_post_delivery_attempts SET delivered_message_id=$3 WHERE guild_id=$1 AND discord_user_id=$2',[g,u,sent.id]);
   pending.delivered_message_id=sent.id;
   if(!pending.attempted_at)pending.attempted_at=(await db.query('SELECT attempted_at FROM poke_post_delivery_attempts WHERE guild_id=$1 AND discord_user_id=$2',[g,u])).rows[0].attempted_at;

@@ -3,7 +3,7 @@ const {ChannelType,PermissionFlagsBits,MessageFlags}=require('discord.js');
 const {createGuildThreadPlanner}=require('./guildThreadPlan');
 const {fingerprint}=require('./threadRouter');
 const {scopedCopyButtons}=require('./guildProfileCommands');
-const threadContentHash=profile=>'thread-v2:'+fingerprint(profile);
+const threadContentHash=profile=>'thread-v3-no-embeds:'+fingerprint(profile);
 function createGuildThreadDelivery({pool,client,render,guildIds=null,logger=console,now=()=>new Date()}){
  const planner=createGuildThreadPlanner({pool,guildIds}),allowed=guildIds===null?null:new Set(guildIds),blocked=new Map();let running=false;
  const review=()=>Object.assign(Error('Unconfirmed thread delivery requires operator review'),{code:'THREAD_DELIVERY_REVIEW'});
@@ -43,7 +43,7 @@ function createGuildThreadDelivery({pool,client,render,guildIds=null,logger=cons
   const imported=!!state?.message_id&&(await db.query("SELECT 1 FROM poke_post_imports WHERE import_key='legacy-shared-v1' AND guild_id=$1",[g])).rows.length>0;
   const old=state&&await existing(ch,state.message_id,g,u,imported);
   if(ch.archived)await ch.setArchived(false,'Update configured PokéPost group feed');
-  if(old){await old.edit(payload);await db.query('UPDATE poke_post_thread_posts SET content_hash=$3,checked_at=$4 WHERE guild_id=$1 AND discord_user_id=$2',[g,u,threadContentHash(profile),now()]);return true;}
+  if(old){await old.edit({...payload,flags:MessageFlags.SuppressEmbeds});await db.query('UPDATE poke_post_thread_posts SET content_hash=$3,checked_at=$4 WHERE guild_id=$1 AND discord_user_id=$2',[g,u,threadContentHash(profile),now()]);return true;}
   if(state?.attempted_at)throw review();
   const nonce=randomUUID().replaceAll('-','').slice(0,25);
   await db.query(`INSERT INTO poke_post_thread_posts(guild_id,discord_user_id,thread_id,delivery_nonce,attempted_at,checked_at)
@@ -51,7 +51,7 @@ function createGuildThreadDelivery({pool,client,render,guildIds=null,logger=cons
    thread_id=EXCLUDED.thread_id,delivery_nonce=EXCLUDED.delivery_nonce,message_id=NULL,content_hash=NULL,attempted_at=EXCLUDED.attempted_at,checked_at=EXCLUDED.checked_at`,[g,u,target,nonce,now()]);
   // Persist intent before Discord. Any uncertain send is held for reconciliation,
   // never replayed from a changed profile or beyond Discord's dedupe window.
-  const sent=await ch.send({...payload,flags:MessageFlags.SuppressNotifications,nonce,enforceNonce:true});
+  const sent=await ch.send({...payload,flags:MessageFlags.SuppressNotifications|MessageFlags.SuppressEmbeds,nonce,enforceNonce:true});
   await db.query('UPDATE poke_post_thread_posts SET message_id=$3,content_hash=$4,attempted_at=NULL,checked_at=$5 WHERE guild_id=$1 AND discord_user_id=$2',[g,u,sent.id,threadContentHash(profile),now()]);return true;
  });}
  async function reconcile(g,u,{nonce,messageId}={}){if(typeof nonce!=='string'||!/^\d{17,20}$/.test(messageId||''))throw review();return locked(g,u,async db=>{
