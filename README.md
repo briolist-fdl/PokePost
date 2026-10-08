@@ -9,14 +9,17 @@ features arrive later, servers will get notice before anything changes.
 
 ## Add PokéPost to a server
 
-[Install PokéPost](https://discord.com/oauth2/authorize?client_id=1494609975031369828&scope=bot%20applications.commands&permissions=292058106880&integration_type=0)
+[Install PokéPost](https://discord.com/oauth2/authorize?client_id=1494609975031369828&scope=bot%20applications.commands&permissions=292058115072&integration_type=0)
 
 The link requests only Guild Install. It asks for permission to view channels,
-read message history, send messages, send in threads, manage threads and use
-external emojis. A moderator needs **Manage Messages** to configure the bot.
+read message history, send messages, manage messages, send in threads, manage
+threads and use external emojis. A moderator needs **Manage Messages** to configure
+the bot. PokéPost removes regular messages from configured friend-code feeds and
+briefly points the author to `/post setup`.
 
-1. Run `/post admin server` and select a main friend code channel and your local
-   Vivillon region. A separate local channel is optional.
+1. Run `/post admin server` and select a main friend code channel, your local
+   Vivillon region, and whether automatic bumps are enabled. A separate local
+   channel is optional.
 2. If you already have Vivillon group threads, run `/post admin thread` for each
    group you want to link. Thread sorting is optional. PokéPost does not create
    the threads for you yet.

@@ -29,7 +29,7 @@ async function main(){
    const body=testCommands();for(const guild of config.guildIds)await rest.put(Routes.applicationGuildCommands(config.clientId,guild),{body});
    console.log('Test commands registered only in the configured test servers.');await stop();return;
   }
-  client=new Client({intents:[GatewayIntentBits.Guilds]});
+  client=new Client({intents:[GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages]});
   const runtime=createTestRuntime({pool,client,guildIds:config.guildIds,logger:diagnostics});
   const retention=createDataRetention({pool,guildIds:config.guildIds});
   client.on(Events.Error,error=>report('test_discord_error',error));
@@ -38,6 +38,7 @@ async function main(){
     try{if(i.deferred)await i.editReply(payload);else if(!i.replied)await i.reply({...payload,flags:MessageFlags.Ephemeral});}catch(replyError){report('test_reply_failed',replyError);}
    }
   }));
+  client.on(Events.MessageCreate,message=>track(()=>runtime.handleMessage(message)));
   let busy=false;
   client.once(Events.ClientReady,()=>{
    if(closing)return;

@@ -30,21 +30,27 @@ function createServerSetup({store,now=()=>Date.now(),logger=console}) {
     for(const [key,value] of sessions)if(value.actor===i.user.id && value.guild===i.guildId)sessions.delete(key);
     const key=randomUUID();sessions.set(key,{...data,actor:i.user.id,guild:i.guildId,expires:now()+900000});return 'post_server:'+key;
   }
-  function channelInput(id,label,selected,optional) {
+  function channelInput(id,label,description,selected,optional) {
     const select=new ChannelSelectMenuBuilder().setCustomId(id).setChannelTypes(ChannelType.GuildText,ChannelType.GuildAnnouncement)
       .setMinValues(optional?0:1).setMaxValues(1).setRequired(!optional);
     if(selected)select.setDefaultChannels(selected);
-    return new LabelBuilder().setLabel(label).setChannelSelectMenuComponent(select);
+    return new LabelBuilder().setLabel(label).setDescription(description).setChannelSelectMenuComponent(select);
   }
   async function open(i) {
     if(!await guard(i))return;
     const settings=await store.get(i.guildId);
     const region=new StringSelectMenuBuilder().setCustomId('local_pattern').setPlaceholder('Choose your local Vivillon region')
       .setMinValues(1).setMaxValues(1).addOptions(Object.values(GROUPS).flat().sort().map(value=>({label:title(value),value,default:settings?.localPattern===value})));
+    const bumps=new StringSelectMenuBuilder().setCustomId('automatic_bumps').setPlaceholder('Choose whether PokéPost should bump posts automatically')
+      .setMinValues(1).setMaxValues(1).addOptions([
+        {label:'Enable automatic bumps',value:'enabled',default:settings ? settings.bumpEnabled : true},
+        {label:'Keep automatic bumps off',value:'disabled',default:settings ? !settings.bumpEnabled : false}
+      ]);
     const modal=new ModalBuilder().setCustomId(session(i,{kind:'feeds',expected:feedSnapshot(settings)})).setTitle('Set up your server feeds')
-      .addLabelComponents(channelInput('main_channel','Main friend code feed',settings?.internationalChannelId,false),
-        channelInput('local_channel','Separate local feed, optional',settings?.localChannelId,true),
-        new LabelBuilder().setLabel('Local Vivillon region').setStringSelectMenuComponent(region));
+      .addLabelComponents(channelInput('main_channel','Main friend code feed','Posts appear here unless they belong in a separate local feed.',settings?.internationalChannelId,false),
+        channelInput('local_channel','Separate local feed, optional','Show posts from your local Vivillon region in this channel.',settings?.localChannelId,true),
+        new LabelBuilder().setLabel('Local Vivillon region').setDescription('Posts from this region use the local feed, if selected.').setStringSelectMenuComponent(region),
+        new LabelBuilder().setLabel('Automatic bumps').setDescription('Periodically repost eligible profiles so active friend codes stay visible.').setStringSelectMenuComponent(bumps));
     await i.showModal(modal);
   }
   async function openThread(i,group) {
@@ -71,12 +77,13 @@ function createServerSetup({store,now=()=>Date.now(),logger=console}) {
     try {
       if(pending.kind==='feeds') {
         const main=i.fields.getSelectedChannels('main_channel'),local=i.fields.getSelectedChannels('local_channel');
-        const patterns=i.fields.getStringSelectValues('local_pattern');
-        if(main?.size!==1 || (local?.size||0)>1 || patterns.length!==1)throw Error('Choose one main feed and one local region. A separate local feed is optional.');
-        const values={internationalChannelId:main.first().id,localChannelId:local?.first()?.id||null,localPattern:patterns[0]};
+        const patterns=i.fields.getStringSelectValues('local_pattern'),bumpChoices=i.fields.getStringSelectValues('automatic_bumps');
+        if(main?.size!==1 || (local?.size||0)>1 || patterns.length!==1 || bumpChoices.length!==1 || !['enabled','disabled'].includes(bumpChoices[0]))throw Error('Choose one main feed, one local region and an automatic bumping preference. A separate local feed is optional.');
+        const values={internationalChannelId:main.first().id,localChannelId:local?.first()?.id||null,localPattern:patterns[0],bumpEnabled:bumpChoices[0]==='enabled'};
         await store.saveFeeds(i.guild,values,pending.expected);
         logger.log?.(JSON.stringify({event:'poke_post_server_setup_saved',guildId:i.guildId,actorId:i.user.id,action:'feeds',...values}));
-        await i.editReply({content:values.localChannelId ? 'Your feed settings are saved. The local region has a separate feed.' : 'Your feed settings are saved. All regions use the main feed.',allowedMentions:{parse:[]}});
+        const feeds=values.localChannelId ? 'The local region has a separate feed.' : 'All regions use the main feed.';
+        await i.editReply({content:'Your feed settings are saved. '+feeds+' Automatic bumps are '+(values.bumpEnabled?'enabled':'off')+' for this server.',allowedMentions:{parse:[]}});
       }else {
         const threadId=parseThread(i.fields.getTextInputValue('thread'),i.guildId);
         await store.saveThread(i.guild,pending.group,threadId,pending.expected);
