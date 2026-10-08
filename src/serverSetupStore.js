@@ -3,7 +3,7 @@ const { createGuildSettingsStore } = require('./guildSettings');
 const { GROUPS } = require('./vivillonGroups');
 const idValid = value => typeof value === 'string' && /^\d{17,20}$/.test(value);
 function feedSnapshot(settings) {
-  return settings ? JSON.stringify([settings.internationalChannelId, settings.localChannelId || null, settings.localPattern]) : null;
+  return settings ? JSON.stringify([settings.internationalChannelId, settings.localChannelId || null, settings.localPattern, settings.moderateChannels]) : null;
 }
 function createServerSetupStore(pool) {
   const base = createGuildSettingsStore(pool);
@@ -32,7 +32,7 @@ function createServerSetupStore(pool) {
       if (feedSnapshot(current) !== expected) throw Error('The server setup changed while this form was open. Reopen it to review the latest choices.');
       await store.save({ guildId:guild.id, internationalChannelId:values.internationalChannelId,
         localChannelId:values.localChannelId || null, localPattern:values.localPattern,
-        moderateChannels:current?.moderateChannels || false,bumpEnabled:current?.bumpEnabled || false },guild);
+        moderateChannels:values.moderateChannels,bumpEnabled:current?.bumpEnabled || false },guild);
       await db.query(`INSERT INTO poke_post_refresh_queue(guild_id,discord_user_id)
         SELECT guild_id,discord_user_id FROM poke_post_activations WHERE guild_id=$1 AND active
         ON CONFLICT(guild_id,discord_user_id) DO UPDATE SET generation=poke_post_refresh_queue.generation+1,requested_at=NOW()`,[guild.id]);

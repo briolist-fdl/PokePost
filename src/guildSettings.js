@@ -44,10 +44,13 @@ async function validateChannels(settings, guild) {
         ![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(channel.type)) {
       throw new Error('Feed channels must be text or announcement channels in this server');
     }
+    const permissions = channel.permissionsFor(me);
     const needed = [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages,
       PermissionFlagsBits.ReadMessageHistory];
-    if (settings.moderateChannels) needed.push(PermissionFlagsBits.ManageMessages);
-    if (!channel.permissionsFor(me)?.has(needed)) throw new Error('The bot lacks required feed permissions');
+    if (!permissions?.has(needed)) throw new Error('PokéPost needs permission to view the selected feed channels, read their history and send messages there.');
+    if (settings.moderateChannels && !permissions.has(PermissionFlagsBits.ManageMessages)) {
+      throw new Error('PokéPost needs Manage Messages in the selected feed channels to keep them clean. Grant it there, then reopen this form.');
+    }
   }
 }
 

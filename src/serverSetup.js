@@ -41,10 +41,15 @@ function createServerSetup({store,now=()=>Date.now(),logger=console}) {
     const settings=await store.get(i.guildId);
     const region=new StringSelectMenuBuilder().setCustomId('local_pattern').setPlaceholder('Choose your local Vivillon region')
       .setMinValues(1).setMaxValues(1).addOptions(Object.values(GROUPS).flat().sort().map(value=>({label:title(value),value,default:settings?.localPattern===value})));
+    const feedMode=new StringSelectMenuBuilder().setCustomId('moderate_channels').setMinValues(1).setMaxValues(1)
+      .setPlaceholder('Choose how the feeds should work').addOptions(
+        {label:'Keep feeds clean',value:'clean',description:'Remove regular messages and show a brief setup instruction.',default:settings?.moderateChannels===true},
+        {label:'Allow regular messages',value:'open',description:'Leave regular messages in the selected feed channels.',default:settings?.moderateChannels!==true});
     const modal=new ModalBuilder().setCustomId(session(i,{kind:'feeds',expected:feedSnapshot(settings)})).setTitle('Set up your server feeds')
       .addLabelComponents(channelInput('main_channel','Main friend code feed',settings?.internationalChannelId,false),
         channelInput('local_channel','Separate local feed, optional',settings?.localChannelId,true),
-        new LabelBuilder().setLabel('Local Vivillon region').setStringSelectMenuComponent(region));
+        new LabelBuilder().setLabel('Local Vivillon region').setStringSelectMenuComponent(region),
+        new LabelBuilder().setLabel('Keep selected feeds clean?').setStringSelectMenuComponent(feedMode));
     await i.showModal(modal);
   }
   async function openThread(i,group) {
@@ -71,12 +76,14 @@ function createServerSetup({store,now=()=>Date.now(),logger=console}) {
     try {
       if(pending.kind==='feeds') {
         const main=i.fields.getSelectedChannels('main_channel'),local=i.fields.getSelectedChannels('local_channel');
-        const patterns=i.fields.getStringSelectValues('local_pattern');
-        if(main?.size!==1 || (local?.size||0)>1 || patterns.length!==1)throw Error('Choose one main feed and one local region. A separate local feed is optional.');
-        const values={internationalChannelId:main.first().id,localChannelId:local?.first()?.id||null,localPattern:patterns[0]};
+        const patterns=i.fields.getStringSelectValues('local_pattern'),modes=i.fields.getStringSelectValues('moderate_channels');
+        if(main?.size!==1 || (local?.size||0)>1 || patterns.length!==1 || modes.length!==1)throw Error('Choose one main feed, one local region and how the feeds should work. A separate local feed is optional.');
+        const values={internationalChannelId:main.first().id,localChannelId:local?.first()?.id||null,localPattern:patterns[0],moderateChannels:modes[0]==='clean'};
         await store.saveFeeds(i.guild,values,pending.expected);
         logger.log?.(JSON.stringify({event:'poke_post_server_setup_saved',guildId:i.guildId,actorId:i.user.id,action:'feeds',...values}));
-        await i.editReply({content:values.localChannelId ? 'Your feed settings are saved. The local region has a separate feed.' : 'Your feed settings are saved. All regions use the main feed.',allowedMentions:{parse:[]}});
+        const routing=values.localChannelId ? 'The local region has a separate feed.' : 'All regions use the main feed.';
+        const moderation=values.moderateChannels ? 'Regular messages in the selected feed channels are removed and a brief setup instruction disappears automatically.' : 'Regular messages are allowed in the selected feed channels.';
+        await i.editReply({content:'Your feed settings are saved. '+routing+' '+moderation,allowedMentions:{parse:[]}});
       }else {
         const threadId=parseThread(i.fields.getTextInputValue('thread'),i.guildId);
         await store.saveThread(i.guild,pending.group,threadId,pending.expected);

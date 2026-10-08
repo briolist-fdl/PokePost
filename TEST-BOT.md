@@ -45,7 +45,9 @@ waits for tracked work before closing the database pool.
 ## First Discord acceptance test
 
 1. Use /post admin server to choose a main feed and local region. A separate local
-   feed is optional. Saving a feed change queues active profiles in that guild.
+   feed is optional. Choose whether to keep the selected feeds clean. The clean
+   option requires Manage Messages in those channels. Saving a feed change queues
+   active profiles in that guild.
 2. Create a test profile with /post setup. Confirm a single silent post appears
    after a worker tick, with a working private copy reply.
 3. Edit it. Confirm the existing post updates. Change region with a separate local

@@ -241,6 +241,9 @@ PokéPost needs the Discord permissions required to:
 * use slash commands
 * send messages in configured friend code channels
 * edit or delete bot-created profile posts when users update/delete their profile
+* send messages in configured group threads when a server enables thread routing
+
+During `/post admin server`, administrators can choose whether the selected feeds stay clean. When enabled, PokéPost removes regular messages from those feeds, posts a short instruction to use `/post setup`, then removes that instruction automatically. This option requires **Manage Messages** in the selected feed channels. It is optional and can be granted only in those channels.
 * send ephemeral command responses
 
 ## Privacy and data
