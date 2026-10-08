@@ -1,6 +1,6 @@
 const { PermissionFlagsBits } = require('discord.js');
 
-const INSTRUCTION = 'Please use `/post setup` to share your friend code. Regular messages are removed from this feed.';
+const instructionFor = userId => '<@' + userId + '> Please use `/post setup` to share your friend code. Regular messages are removed from this feed.';
 
 function createCleanFeedModeration({ store, logger = console, schedule = setTimeout, instructionLifetimeMs = 20000 }) {
   async function handle(message) {
@@ -18,11 +18,11 @@ function createCleanFeedModeration({ store, logger = console, schedule = setTime
     }
 
     await message.delete();
-    const instruction = await message.channel.send({ content: INSTRUCTION, allowedMentions: { parse: [] } });
+    const instruction = await message.channel.send({ content: instructionFor(message.author.id), allowedMentions: { parse: [], users: [message.author.id] } });
     schedule(() => instruction.delete().catch(error => logger.warn?.(JSON.stringify({ event: 'poke_post_clean_feed_instruction_delete_failed', guildId: message.guildId, channelId: message.channelId, errorCode: error?.code || null }))), instructionLifetimeMs);
     return true;
   }
-  return { handle, INSTRUCTION };
+  return { handle };
 }
 
-module.exports = { createCleanFeedModeration, INSTRUCTION };
+module.exports = { createCleanFeedModeration, instructionFor };
