@@ -9,7 +9,7 @@ function scopedCopyButtons(profile) {
    .setLabel(index===0?'📋 Copy friend code':`📋 Copy code ${index+1}`));
  const profileButton=new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('View profile')
   .setURL(`https://discord.com/users/${profile.discord_user_id}`);
- return [new ActionRowBuilder().addComponents(copyButtons[0],profileButton,...copyButtons.slice(1))];
+ return [new ActionRowBuilder().addComponents(profileButton,...copyButtons)];
 }
 function createGuildProfileCommands({form,formStore,activationStore,getSettings,ownerStore,deactivate,logger=console,now=()=>Date.now()}) {
  const confirmations=new Map();

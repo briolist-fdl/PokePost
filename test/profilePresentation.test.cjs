@@ -24,15 +24,17 @@ test('a failed user lookup retains a neutral label and never adds a preview link
  assert.doesNotMatch(content,/discord\.com\/users/);
 });
 
-test('profile link button is beside the primary copy button, including with three extra codes',()=>{
+test('profile link precedes copy buttons in code order, including with three extra codes',()=>{
  const rows=scopedCopyButtons(profile).map(row=>row.toJSON());
  assert.equal(rows.length,1);
  const buttons=rows[0].components;
  assert.equal(buttons.length,5);
- assert.equal(buttons[0].custom_id,`guild_copy:${profile.guild_id}:${profile.discord_user_id}:0`);
- assert.equal(buttons[1].style,ButtonStyle.Link);
- assert.equal(buttons[1].label,'View profile');
- assert.equal(buttons[1].url,`https://discord.com/users/${profile.discord_user_id}`);
- assert.equal(buttons[1].custom_id,undefined);
+ assert.equal(buttons[0].style,ButtonStyle.Link);
+ assert.equal(buttons[0].label,'View profile');
+ assert.equal(buttons[0].url,`https://discord.com/users/${profile.discord_user_id}`);
+ assert.equal(buttons[0].custom_id,undefined);
+ assert.equal(buttons[1].custom_id,`guild_copy:${profile.guild_id}:${profile.discord_user_id}:0`);
  assert.equal(buttons[2].custom_id,`guild_copy:${profile.guild_id}:${profile.discord_user_id}:1`);
+ assert.equal(buttons[3].custom_id,`guild_copy:${profile.guild_id}:${profile.discord_user_id}:2`);
+ assert.equal(buttons[4].custom_id,`guild_copy:${profile.guild_id}:${profile.discord_user_id}:3`);
 });
