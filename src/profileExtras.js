@@ -6,7 +6,7 @@ function normalizePersonalMessage(value) {
   if (typeof value !== 'string') throw Error('Personal message must be text');
   const text = value.replace(/\s+/gu, ' ').trim();
   if (Array.from(text).length > 160) throw Error('Personal message must be at most 160 characters');
-  // This exact sentinel is part of the Selective Auto Publisher contract.
+  // This exact sentinel is part of the SelectiveAutoPublisher contract.
   if (text.includes('🔇 republishing off')) throw Error('Personal message contains reserved publishing text');
   return text || null;
 }
