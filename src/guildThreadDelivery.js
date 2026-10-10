@@ -3,7 +3,7 @@ const {ChannelType,PermissionFlagsBits,MessageFlags}=require('discord.js');
 const {createGuildThreadPlanner}=require('./guildThreadPlan');
 const {fingerprint}=require('./threadRouter');
 const {scopedCopyButtons}=require('./guildProfileCommands');
-const threadContentHash=profile=>'thread-v3-no-embeds:'+fingerprint(profile);
+const threadContentHash=profile=>'thread-v4-profile-button:'+fingerprint(profile);
 function createGuildThreadDelivery({pool,client,render,guildIds=null,logger=console,now=()=>new Date()}){
  const planner=createGuildThreadPlanner({pool,guildIds}),allowed=guildIds===null?null:new Set(guildIds),blocked=new Map();let running=false;
  const review=()=>Object.assign(Error('Unconfirmed thread delivery requires operator review'),{code:'THREAD_DELIVERY_REVIEW'});

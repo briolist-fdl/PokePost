@@ -4,7 +4,7 @@ const validId=id=>typeof id==='string'&&/^\d{17,20}$/.test(id);
 // Existing imported thread rows stored the profile fingerprint only. Prefixing
 // the renderer version makes each of those rows receive one safe conversion to
 // the shared thread layout, without repeatedly rewriting it thereafter.
-const threadContentHash=profile=>'thread-v3-no-embeds:'+fingerprint(profile);
+const threadContentHash=profile=>'thread-v4-profile-button:'+fingerprint(profile);
 // Read-only planning boundary. A future executor must lock and re-read before
 // Discord I/O; this snapshot is deliberately not an authorization to send.
 function createGuildThreadPlanner({pool,guildIds=null}){

@@ -4,9 +4,12 @@ const POKETRADE_INTEREST_URL='https://discord.gg/FzXq7fjRhR';
 const formatCode=code=>code.replace(/(\d{4})(\d{4})(\d{4})/,'$1 $2 $3');
 function scopedCopyButtons(profile) {
  if(!/^\d{17,20}$/.test(profile.guild_id)||!/^\d{17,20}$/.test(profile.discord_user_id))throw Error('Missing profile scope');
- return [new ActionRowBuilder().addComponents([profile.trainer_code_raw,...(profile.additional_codes||[])].map((code,index)=>
+ const copyButtons=[profile.trainer_code_raw,...(profile.additional_codes||[])].map((code,index)=>
   new ButtonBuilder().setCustomId(`guild_copy:${profile.guild_id}:${profile.discord_user_id}:${index}`).setStyle(ButtonStyle.Secondary)
-   .setLabel(index===0?'📋 Copy friend code':`📋 Copy code ${index+1}`)))];
+   .setLabel(index===0?'📋 Copy friend code':`📋 Copy code ${index+1}`));
+ const profileButton=new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('View profile')
+  .setURL(`https://discord.com/users/${profile.discord_user_id}`);
+ return [new ActionRowBuilder().addComponents(copyButtons[0],profileButton,...copyButtons.slice(1))];
 }
 function createGuildProfileCommands({form,formStore,activationStore,getSettings,ownerStore,deactivate,logger=console,now=()=>Date.now()}) {
  const confirmations=new Map();

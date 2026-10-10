@@ -33,11 +33,8 @@ function createProfileRenderer(client){
  return async function render(profile){
   let label='Discord profile';
   try{const user=await client.users.fetch(profile.discord_user_id,{force:true});if(/^[a-z0-9_.]{2,32}$/.test(user?.username||''))label=user.username;}catch{}
-  // Discord usernames cannot inject brackets into the link label. Underscores
-  // stay literal here because escaping them renders visible slashes on mobile.
-  const identity=`[${label}](<https://discord.com/users/${profile.discord_user_id}>)`;
   const marks=await appIcons();
-  const line=`${marks.discord} ${identity} | ${marks.pokeball} ${safe(profile.pokemon_username)}`+(profile.campfire_username?` | ${marks.campfire} ${safe(profile.campfire_username)}`:'');
+  const line=`${marks.discord} ${safe(label)} | ${marks.pokeball} ${safe(profile.pokemon_username)}`+(profile.campfire_username?` | ${marks.campfire} ${safe(profile.campfire_username)}`:'');
   const codes=[profile.trainer_code_raw,...(profile.additional_codes||[])].map(code).join(' | ')+(profile.publish_to_followers===false?' | 🔇 republishing off':'');
   return [`${EMOJIS[profile.vivillon_pattern]||''} ${title(profile.vivillon_pattern)} Trainer`,'',line,'',codes].join('\n');
  };
